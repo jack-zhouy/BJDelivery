@@ -1,0 +1,28 @@
+<view class="content">
+      <view class="userinfo">
+    <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> loading  </button>
+    <block wx:else>
+      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
+      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+    </block>
+  </view>
+    <form bindsubmit="formSubmit">
+        <view class="input-area">
+          <view class="input-log">  
+          <image class="userinfo-logIcon" src="{{logIcon}}"></image>  
+            <input id="username" name="username" maxlength='40' type="text" placeholder="用户名" value="{{inputUserName}}"/>
+          </view>
+          <view class="input-log">
+            <image class="userinfo-logIcon" src="{{pwdIcon}}"></image>  
+            <input id="password" name="password" maxlength='20' type="password" placeholder="密码" value="{{inputPassword}}"/>
+          </view>
+        </view>
+        <view class="btn-area">
+            <button  disabled="{{disabled}}" style="background-color:{{loginBtnBgBgColor}};margin-top:100px"   formType="submit"  loading="{{btnLoading}}"> {{loginBtnTxt}} </button>
+            <!-- <view class="txt-area">
+                <navigator redirect url="../forgetpwd/index"><text class="forgot-password">忘记密码？</text></navigator>
+                <navigator redirect url="../regist/index"><text class="register">注册账号</text></navigator> 
+            </view> -->
+        </view>
+    </form>
+</view>

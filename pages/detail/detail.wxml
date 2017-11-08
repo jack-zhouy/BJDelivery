@@ -1,0 +1,53 @@
+<loading hidden="{{loading}}">
+  客官请等待...
+</loading>
+<!-- 概要 -->
+<view class="order-details">
+  <view class="order-synopsis">
+    <view class="order-title"><text>订单号:{{order.id}}</text></view>
+    <view class="order-brief">
+    <text class="wish" >地址:{{order.location}}</text>
+      <image class="thumb"  bindtap='showMap' data-address="{{order.location}}"  src="../../images/maps.png"></image>
+    </view>
+    <view><text class="order-rating">{{order.userName}} | {{order.phone}}</text></view>
+    <view class="order-brief">{{order.createTime}}</view>
+  </view>
+</view>
+<!-- 订单详情 -->
+<view class="order-desc">
+  <view class="title">订单详情</view>
+  	<!-- 商品清单 -->
+	<view class="info">
+		<!-- 清单 -->
+		<view class="list">
+			<view class="item" wx:for="{{carts.carts}}" wx:key="">
+				<view class="title">{{item.goodName}}</view>
+				<view class="quantity">{{item.quantity}}</view>
+				<view class="price">{{item.price}}</view>
+			</view>
+
+		</view>
+		<!-- 配送费 -->
+		<view class="item">
+			<view class="express-label">配送费</view>
+			<view class="express-fee">0</view>
+		</view>
+		<!-- 总计 -->
+		<view class="item">
+			<view class="amount">{{total}}</view>
+		</view>
+	</view>
+</view>
+
+<!-- 备注 -->
+<view class="order-comments">
+  <view class="title">备注</view>
+  <view class="order-comment">
+    <text>{{order.psText}}</text>
+  </view>
+</view>
+
+<!-- 抢单 -->
+<view class="order-buy">
+  <text class="btn-buy" bindtap="getOrders">立即抢单</text>
+</view>

@@ -1,0 +1,44 @@
+/**app.wxss**/
+
+
+
+.tac{text-align: center;}
+.cfff{
+    color: #fff;
+}
+page{
+    font-family: Microsoft YaHei;
+    position: relative;
+}
+swiper{
+    height: 384rpx;
+}
+.main{
+    min-height: 100vh;
+    background: #fff;
+    padding-bottom: 12rpx;
+    box-sizing: border-box;
+}
+.content{
+    padding-left: 10rpx;
+    padding-right: 10rpx;
+}
+.flex{
+    display: flex;
+}
+navigator:hover{
+    background-color: none;
+}
+.banner image{
+    width: 750rpx;
+    height: 384rpx;
+}
+.pt_20{
+    padding-top: 20rpx;
+}
+.pt_12{
+    padding-top: 12rpx;
+}
+.pt_10{
+    padding-top: 10rpx;
+}

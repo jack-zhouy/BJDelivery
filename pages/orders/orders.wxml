@@ -1,0 +1,27 @@
+<loading hidden="{{loading}}">
+  客观请等待...
+</loading>
+
+  <view class="list-item" wx:for="{{orders}}" wx:key="id">
+    <view class="list-info" bindtap='showDetail' data-order="{{item}}">
+      <view class="list-thumb">
+        <image class="thumb" src="../../images/order.png"></image>
+        <icon class="i-play"></icon>
+      </view>
+      <view class="list-content">
+        <view class="list-title">
+          <text>{{item.location}}</text>
+        </view>
+        <view class="list-brief">
+          <text class="wish">姓名：{{item.userName}} | </text>
+          <text>电话：{{item.phone}}</text> 
+        </view>
+        <view class="list-brief">{{item.createTime}}</view>
+      </view>
+    </view>
+    <view class="list-sale">
+      <text class="ui-btn ui-btn-red" bindtap="buyTickets">
+        <block>抢单</block>
+      </text>
+    </view>
+  </view>

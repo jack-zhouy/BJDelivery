@@ -1,0 +1,51 @@
+{
+  "pages": [
+    "pages/orders/orders",
+    "pages/index/index",
+    "pages/contact/contact",
+    "pages/detail/detail",
+    "pages/deliver/deliver",
+    "pages/member/member"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#1d82d2",
+    "backgroundColor": "#fff",
+    "navigationBarTextStyle": "white",
+    "enablePullDownRefresh": "true"
+  },
+  "tabBar": {
+    "color": "#000",
+    "selectedColor": "#1d82d2",
+    "backgroundColor": "#fff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/orders/orders",
+        "iconPath": "images/icon1.png",
+        "selectedIconPath": "images/icon1s.png",
+        "text": "最新订单"
+      },
+      {
+        "pagePath": "pages/board/boardlist",
+        "iconPath": "images/icon3.png",
+        "selectedIconPath": "images/icon3s.png",
+        "text": "公司公告"
+      },
+      {
+        "pagePath": "pages/contact/contact",
+        "iconPath": "images/icon2.png",
+        "selectedIconPath": "images/icon2s.png",
+        "text": "联系客服"
+      },
+      {
+        "pagePath": "pages/member/member",
+        "iconPath": "images/icon4.png",
+        "selectedIconPath": "images/icon4s.png",
+        "text": "我的账户"
+      }
+    ]
+  },
+  "debug": false
+}

@@ -1,0 +1,65 @@
+<loading hidden="{{loading}}">
+  客观请等待...
+</loading>
+<!-- 概要 -->
+<view class="order-details">
+  <view class="order-synopsis">
+    <view class="order-title"><text>当前订单:{{order.id}}</text></view>
+    <view class="order-brief"><text class="wish">地址:{{order.location}}</text></view>
+    <view><text class="order-rating">{{order.userName}} | {{order.phone}}</text></view>
+    <view class="order-brief">{{order.createTime}}</view>
+  </view>
+</view>
+<!-- 配送流程 -->
+<view class="order-desc">
+  <view class="title">配送流程</view>
+	<view class="info">
+		<view class="list">
+			<view class="item" wx:key="">
+				<view class="title">1.  门店取瓶</view>
+<view class="list-thumb">
+      <image class="thumb" wx:if="{{getBottle}}" src="../../images/confirm.jpg"></image>
+            <image class="thumb" wx:if="{{!getBottle}}" src="../../images/click.jpg" bindtap='getBottleFunc'></image>
+      </view>
+			</view>
+      <view class="item" wx:key="">
+				<view class="title">2.  用户签收</view>
+<view class="list-thumb">
+      <image class="thumb"  wx:if="{{delivered}}"  src="../../images/confirm.jpg"></image>
+                  <image class="thumb" wx:if="{{!delivered}}" src="../../images/click.jpg" bindtap='deliveredFunc'></image>
+      </view>
+			</view>
+
+		</view>
+		<!-- 配送费 -->
+    <view class="list">
+		<view class="item">
+			<view class="express-label">新钢瓶号：</view>
+			<view class="express-label">{{newBottle.id}}</view>
+      <view class="list-thumb">
+      <image class="thumb" src="../../images/qrcode.jpg" bindtap='scanNewId'></image>
+      </view>
+		</view>
+    		<view class="item">
+			<view class="express-label">旧钢瓶号：</view>
+			<view class="express-label">{{oldBottle.id}}</view>
+      <view class="list-thumb">
+      <image class="thumb" src="../../images/qrcode.jpg" bindtap='scanOldId'></image>
+      </view>
+		</view>
+   </view> 
+	</view>
+</view>
+
+<!-- 备注 -->
+<view class="order-comments">
+  <view class="title">备注</view>
+  <view class="order-comment">
+    <text>{{order.psText}}</text>
+  </view>
+</view>
+
+<!-- 抢单 -->
+<view class="order-buy">
+  <text class="btn-buy" bindtap="buyTickets">配送成功</text>
+</view>
