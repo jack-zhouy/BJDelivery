@@ -1,11 +1,12 @@
 {
   "pages": [
-    "pages/orders/orders",
     "pages/index/index",
+    "pages/orders/orders",
     "pages/contact/contact",
     "pages/detail/detail",
     "pages/deliver/deliver",
-    "pages/member/member"
+    "pages/member/member",
+    "pages/myorders/myorders"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -25,13 +26,13 @@
         "pagePath": "pages/orders/orders",
         "iconPath": "images/icon1.png",
         "selectedIconPath": "images/icon1s.png",
-        "text": "最新订单"
+        "text": "待抢订单"
       },
       {
-        "pagePath": "pages/board/boardlist",
+        "pagePath": "pages/myorders/myorders",
         "iconPath": "images/icon3.png",
         "selectedIconPath": "images/icon3s.png",
-        "text": "公司公告"
+        "text": "我的订单"
       },
       {
         "pagePath": "pages/contact/contact",

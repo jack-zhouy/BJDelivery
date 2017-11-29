@@ -19,9 +19,9 @@
         <view class="list-brief">{{item.createTime}}</view>
       </view>
     </view>
-    <view class="list-sale">
-      <text class="ui-btn ui-btn-red" bindtap="getOrder" data-orderindex="{{item.id}}">
-        <block>抢单</block>
+        <view class="list-sale">
+      <text class="ui-btn ui-btn-red" bindtap="dealOrder" data-order="{{item}}">
+        <block>配送</block>
       </text>
     </view>
   </view>

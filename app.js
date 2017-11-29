@@ -5,8 +5,6 @@ App({
     baseUrl: 'http://118.31.77.228:8006',
     appid:  'wxb137ebfa3dc90901',
     secret: 'ec3bbfe9300efa39b561ebac0aac5f2d',
-    openid: null,
-    cst_number: null
   },
  
 

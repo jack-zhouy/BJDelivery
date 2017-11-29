@@ -48,6 +48,6 @@
 </view>
 
 <!-- 抢单 -->
-<view class="order-buy">
-  <text class="btn-buy" bindtap="getOrders">立即抢单</text>
+<view class="order-buy" wx:if="{{showGrab}}">
+  <text class="btn-buy" bindtap="getOrder">立即抢单</text>
 </view>

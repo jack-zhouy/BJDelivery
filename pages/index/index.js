@@ -17,7 +17,6 @@ Page({
     onLoad: function () {
       var app = getApp();
       if (app.globalData.userInfo) {
-        console.log(app.globalData.userInfo);
         this.setData({
           userInfo: app.globalData.userInfo,
           hasUserInfo: true
@@ -116,40 +115,44 @@ Page({
     var username = param.username.trim();
     var password = param.password.trim();
     var that = this;
-    wx.request({
-      url: getApp().GlobalConfig.baseUrl + "/api/login",
-      data: {
-        id: username,
-        password: password
-      },
-      method: 'GET',
-      success: function (res) {
-        // 数据从逻辑层发送到视图层，同时改变对应的 this.data 的值
-        console.log(res);
-        if (res.statusCode!=200) {
-          that.loginFailed();
-        }else{
-          //存储用户信息
-          var app = getApp();
-          app.globalData.loginState = true;
-          app.globalData.userId = username;
-          getApp().GlobalConfig.cst_number = res.data.id;
-          that.loginSuc();
-        }
-      },
-      fail: function () {       
-        wx.showModal({
-          title: '提示',
-          showCancel: false,
-          content: '登录失败，请求错误！'
-        });
-        that.setLoginData2();
-      },
-      complete:function()
-      {
+    //用户登录验证
+    // wx.request({
+    //   url: getApp().GlobalConfig.baseUrl + "/api/login",
+    //   data: {
+    //     id: username,
+    //     password: password
+    //   },
+    //   method: 'GET',
+    //   success: function (res) {
+    //     // 数据从逻辑层发送到视图层，同时改变对应的 this.data 的值
+    //     console.log(res);
+    //     if (res.statusCode!=200) {
+    //       that.loginFailed();
+    //     }else{
+    //       //存储用户信息
+    //       var app = getApp();
+    //       app.globalData.loginState = true;
+    //       app.globalData.userId = username;
+    //       that.loginSuc();
+    //     }
+    //   },
+    //   fail: function () {       
+    //     wx.showModal({
+    //       title: '提示',
+    //       showCancel: false,
+    //       content: '登录失败，请求错误！'
+    //     });
+    //     that.setLoginData2();
+    //   },
+    //   complete:function()
+    //   {
 
-      }
-    })
+    //   }
+    // })
+    var app = getApp();
+           app.globalData.loginState = true;
+           app.globalData.userId = username;
+           that.loginSuc();
   },
   navigateTo:function(param){
     wx.switchTab({
@@ -181,7 +184,6 @@ Page({
       //清空密码
       that.setData({
         inputPassword: null,
-
       });
     }, 2000);
   }

@@ -1,8 +1,9 @@
 Page({
   data: {
     order: {},
-    carts:{},
+    carts: {},
     loading: false,
+    showGrab: false
   },
   // 页面初始化
   onLoad: function (options) {
@@ -10,6 +11,13 @@ Page({
     var that = this;
     var order = JSON.parse(options.order);
     var carts = JSON.parse(order.type);
+    var model = options.model;
+    //还没有抢的订单，需要显示抢单按钮
+    if (model=='public'){
+      that.setData({
+        showGrab:true,
+      })
+    }
     console.log(carts);
     that.setData({
       order: order,
@@ -18,22 +26,42 @@ Page({
     })
   },
   // 页面初次渲染完成（每次打开页面都会调用一次）
-  onReady: function(){
+  onReady: function () {
     console.log(this.data.order.location);
     wx.setNavigationBarTitle({
       title: this.data.order.location
     })
   },
-
   // 抢单
-  getOrders: function() {
-    wx.navigateTo({
-      url: '../deliver/deliver?order=' + JSON.stringify(this.data.order),
-      success: function (res) { },
-      fail: function (res) { },
-      complete: function (res) { },
+  getOrder: function () {
+    var orderIndex = this.data.order.id;
+    wx.showModal({
+      title: '订单号：' + orderIndex,
+      content: '确认抢单？',
+      showCancel: true,
+      confirmColor: '#ff4d64',
+
+      success: (res) => {
+        if (res.confirm) {
+          console.log("抢单成功！");
+          wx.switchTab({
+            url: '../orders/orders',
+          })
+        }
+      },
+      fail: (res) => {
+      }
     })
   },
+  // 抢单
+  // getOrders: function() {
+  //   wx.navigateTo({
+  //     url: '../deliver/deliver?order=' + JSON.stringify(this.data.order),
+  //     success: function (res) { },
+  //     fail: function (res) { },
+  //     complete: function (res) { },
+  //   })
+  // },
   showMap: function (e) {
     var address = e.currentTarget.dataset.address;
     var that = this;
@@ -55,7 +83,7 @@ Page({
         var location = {};
         location.lng = parseFloat(strLocation.split(',')[0]);
         location.lat = parseFloat(strLocation.split(',')[1]);
-        
+
         wx.openLocation({
           address: searchedAddress,
           latitude: location.lat,

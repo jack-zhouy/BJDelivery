@@ -1,65 +1,110 @@
 <loading hidden="{{loading}}">
   客观请等待...
 </loading>
-<!-- 概要 -->
 <view class="order-details">
   <view class="order-synopsis">
-    <view class="order-title"><text>当前订单:{{order.id}}</text></view>
-    <view class="order-brief"><text class="wish">地址:{{order.location}}</text></view>
-    <view><text class="order-rating">{{order.userName}} | {{order.phone}}</text></view>
+    <view class="order-title">
+      <text>订单号:{{order.id}}</text>
+    </view>
+    <view class="order-brief">
+      <text class="wish">地址:{{order.location}}</text>
+      <image class="thumb" bindtap='showMap' data-address="{{order.location}}" src="../../images/maps.png"></image>
+    </view>
+    <view>
+      <text class="order-rating">{{order.userName}} | {{order.phone}}</text>
+    </view>
     <view class="order-brief">{{order.createTime}}</view>
   </view>
 </view>
 <!-- 配送流程 -->
-<view class="order-desc">
+<view class="order-desc offset">
   <view class="title">配送流程</view>
-	<view class="info">
-		<view class="list">
-			<view class="item" wx:key="">
-				<view class="title">1.  门店取瓶</view>
-<view class="list-thumb">
-      <image class="thumb" wx:if="{{getBottle}}" src="../../images/confirm.jpg"></image>
-            <image class="thumb" wx:if="{{!getBottle}}" src="../../images/click.jpg" bindtap='getBottleFunc'></image>
-      </view>
-			</view>
-      <view class="item" wx:key="">
-				<view class="title">2.  用户签收</view>
-<view class="list-thumb">
-      <image class="thumb"  wx:if="{{delivered}}"  src="../../images/confirm.jpg"></image>
-                  <image class="thumb" wx:if="{{!delivered}}" src="../../images/click.jpg" bindtap='deliveredFunc'></image>
-      </view>
-			</view>
-
-		</view>
-		<!-- 配送费 -->
+  <view class="info">
     <view class="list">
-		<view class="item">
-			<view class="express-label">新钢瓶号：</view>
-			<view class="express-label">{{newBottle.id}}</view>
-      <view class="list-thumb">
-      <image class="thumb" src="../../images/qrcode.jpg" bindtap='scanNewId'></image>
-      </view>
-		</view>
-    		<view class="item">
-			<view class="express-label">旧钢瓶号：</view>
-			<view class="express-label">{{oldBottle.id}}</view>
-      <view class="list-thumb">
-      <image class="thumb" src="../../images/qrcode.jpg" bindtap='scanOldId'></image>
-      </view>
-		</view>
-   </view> 
-	</view>
-</view>
 
-<!-- 备注 -->
-<view class="order-comments">
-  <view class="title">备注</view>
-  <view class="order-comment">
-    <text>{{order.psText}}</text>
-  </view>
-</view>
+      <view class="item" wx:key="">
+        <view class="title">1. 空瓶录入</view>  
+         <input  class="express-gas" placeholder='我要手动输入' value='{{oldBottle.id}}'></input>
+        <view class="list-thumb">
+          <image class="thumb2" src="../../images/qrcode.jpg" bindtap='scanOldId'></image>
+        </view>
+      </view>
 
-<!-- 抢单 -->
+
+        <view class="item" wx:key="">
+        <view class="title">2. 重瓶录入</view>  
+        <input  class="express-gas" placeholder='我要手动输入' value='{{newBottle.id}}'></input>
+        <view class="list-thumb">
+          <image class="thumb2" src="../../images/qrcode.jpg" bindtap='scanNewId'></image>
+        </view>
+      </view>
+
+        <view class="item" wx:key="">
+        <view class="title">3. 用户付款</view>  
+        <input  class="express-pay" value='已支付' disabled='true'></input>
+        <view class="list-thumb">
+          <image class="thumb2" src="../../images/empty.jpg" ></image>
+        </view>
+      </view>
+      <view class="item">
+        <view class="express-label">线下需支付金额(元)：</view>
+        <input type='digit' class="express-gas" value='{{addedPayFee}}' bindinput='addedPayFeeChanged'></input>
+                <view class="list-thumb">
+          <image class="thumb2" src="../../images/empty.jpg" ></image>
+        </view>
+      </view>
+            <view class="item">
+        <view class="express-label">支付方式：</view>
+         <input  class="express-gas"  value='{{payType}}' disabled='true'></input>
+               <view class="list-thumb">
+          <picker id="securityCheck" range="{{payTypes}}" bindchange='bindPayTypesChange'>
+            <image class="thumb2" src="../../images/pay.png"></image>
+          </picker>
+        </view>
+      </view>
+        <view class="item" wx:if="{{qrCode}}">
+       <image class="thumb-qrcode" src="{{qrCodeUrl}}"></image>
+      </view>
+
+      <view class="item" wx:key="">
+        <view class="title">4. 安全检查</view>
+        <view class="list-thumb">
+          <picker id="securityCheck" range="{{securityCheckTypes}}" bindchange='bindSecurityCheckChange'>
+            <image class="thumb2" src="../../images/security.png"></image>
+          </picker>
+        </view>
+      </view>
+      <view class="item" wx:for="{{securityCheckResult}}">
+        <view class="express-label">{{item}}</view>
+        <view class="list-thumb">
+          <image class="thumb2" src="../../images/delete.png" bindtap='deleteSecurityCheck' data-index='{{index}}'></image>
+        </view>
+      </view>
+
+
+ <view class="item" wx:key="">
+        <view class="title">5. 用户签收</view>  
+                <input  class="express-pay"  disabled='true' wx:if='{{uploadCertificateFlag}}' value='用户单据已上传'></input>
+        <view class="list-thumb">
+          <image class="thumb2" src="../../images/empty.jpg" ></image>
+        </view>
+      </view>
+      <view class="item">
+        <view class="express-label">单据上传：</view>
+        <view class="list-thumb">
+          <image class="thumb2" src="../../images/qrcode.jpg" bindtap='uploadCertificate'></image>
+        </view> 
+      </view>
+      <view class="item">
+       <image class="thumb3" src="{{tempFilePaths}}"></image>
+      </view>
+    
+
+    </view>
+    </view>
+    </view>
+
+<!-- 配送成功 -->
 <view class="order-buy">
   <text class="btn-buy" bindtap="buyTickets">配送成功</text>
 </view>
