@@ -1,11 +1,11 @@
-<loading hidden="{{loading}}">
+<!-- <loading hidden="{{loading}}">
   客观请等待...
-</loading>
+</loading> -->
 
   <view class="list-item" wx:for="{{orders}}" wx:key="id">
     <view class="list-info" bindtap='showDetail' data-order="{{item}}">
       <view class="list-thumb">
-        <image class="thumb" src="../../images/order.png"></image>
+        <image class="thumb" src="../../images/holder.png"></image>
         <icon class="i-play"></icon>
       </view>
       <view class="list-content">

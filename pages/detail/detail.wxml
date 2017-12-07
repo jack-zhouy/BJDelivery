@@ -25,8 +25,8 @@
 				<view class="quantity">{{item.quantity}}</view>
 				<view class="price">{{item.price}}</view>
 			</view>
-
 		</view>
+    
 		<!-- 配送费 -->
 		<view class="item">
 			<view class="express-label">配送费</view>

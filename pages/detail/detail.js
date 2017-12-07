@@ -53,15 +53,6 @@ Page({
       }
     })
   },
-  // 抢单
-  // getOrders: function() {
-  //   wx.navigateTo({
-  //     url: '../deliver/deliver?order=' + JSON.stringify(this.data.order),
-  //     success: function (res) { },
-  //     fail: function (res) { },
-  //     complete: function (res) { },
-  //   })
-  // },
   showMap: function (e) {
     var address = e.currentTarget.dataset.address;
     var that = this;
