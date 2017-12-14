@@ -18,7 +18,8 @@ Page({
       "现金支付"
     ],
     securityCheckResult: [],
-    payType: "现金支付",
+    payType: "",
+    payState:"",
     addedPayFee: null,
     tempFilePaths: "",
     loading: false,
@@ -28,26 +29,61 @@ Page({
     uploadCertificateFlag:false,
     qrCodeUrl: "",
 
+    deliveryAddress: "",
+    deliveryAddressDetail: "",
+    nextGroup:"",
+
   },
   // 页面初始化
   onLoad: function (options) {
     // options为页面跳转所带来的参数
     var that = this;
     var order = JSON.parse(options.order);
-    var carts = JSON.parse(order.type);
-    console.log(carts);
+    console.log("options.order");
+    console.log(options.order);
+
+    if (order.object.payType == "PTOnLine") {
+      that.data.payType = "微信支付"
+    }
+    else {
+      that.data.payType = "气到付款"
+    }
+
+    if (order.object.payStatus == "PSUnpaid") {
+      that.data.payState = "待支付"
+    }
+    else if (order.object.orderStatus == "PSPaied") {
+      that.data.payState = "已支付"
+    }
+    else if (order.object.orderStatus == "PSRefounding") {
+      that.data.payState = "退款中"
+    }
+    else if (order.object.orderStatus == "PSRefounded") {
+      that.data.payState = "已退款"
+    }
+
+    that.data.deliveryAddress = order.object.recvAddr.province + order.object.recvAddr.city
+      + order.object.recvAddr.county;
+    that.data.deliveryAddressDetail = order.object.recvAddr.detail;
+
+    that.data.addedPayFee = order.object.orderAmount;
+
     that.setData({
       order: order,
-      carts: carts,
       loading: true,
+      deliveryAddress: that.data.deliveryAddress,
+      deliveryAddressDetail: that.data.deliveryAddressDetail,
+      addedPayFee: that.data.addedPayFee,
+      payType: that.data.payType,
+      payState: that.data.payState
     })
   },
   // 页面初次渲染完成（每次打开页面都会调用一次）
   onReady: function () {
-    console.log(this.data.order.location);
-    wx.setNavigationBarTitle({
-      title: this.data.order.location
-    })
+    // console.log(this.data.order.location);
+    // wx.setNavigationBarTitle({
+    //   title: this.data.order.location
+    // })
   },
   // 展开介绍
   showDesc: function () {
@@ -67,16 +103,6 @@ Page({
       url: '../album/album?title=navigate&id=' + this.data.orderDetail.id + '&pid=' + e.target.dataset.index + ''
     })
   },
-  // 抢单
-  getOrders: function () {
-    wx.navigateTo({
-      url: '../deliver/deliver?order=' + JSON.stringify(this.data.order),
-      success: function (res) { },
-      fail: function (res) { },
-      complete: function (res) { },
-    })
-  },
-
   scanOldId: function () {
     var that = this;
     wx.scanCode({
@@ -171,7 +197,6 @@ Page({
     })
   },
   bindSecurityCheckChange: function (e) {
-    console.log('picker发送选择改变，携带值为', e.detail.value);
     var index = e.detail.value;
     var securityType = this.data.securityCheckTypes[index];
     this.data.securityCheckResult.push(securityType);
@@ -182,7 +207,6 @@ Page({
   },
 
   deleteSecurityCheck: function (e) {
-
     var index = e.currentTarget.dataset.index;
     console.log(index);
     this.data.securityCheckResult.splice(index, 1);
@@ -240,13 +264,82 @@ Page({
 
   //加收的金额发生改变
   addedPayFeeChanged: function (e) {
-
     var that = this;
     var value = e.detail.value
-
     that.setData({
       addedPayFee: value,
     })
   },
 
+  successDelivery:function(){
+    var that = this;
+    that.GetDepLeader_request();
+  },
+
+  GetDepLeader_request:function(){
+    var that = this;
+    var app = getApp();
+    console.log("查询用户所属部门责任人");
+    wx.request({
+      url: getApp().GlobalConfig.baseUrl + "/api/sysusers/GetDepLeader",
+      data:{
+        groupCode:"00005",
+        userId: app.globalData.userId
+      },
+      method: 'GET',
+      success: function (res) {
+        // 数据从逻辑层发送到视图层，同时改变对应的 this.data 的值
+        if (res.statusCode != 200) {
+          console.error("请求查询用户所属部门责任人失败");
+        } else {
+          console.log("请求查询用户所属部门责任人成功");
+          console.log(res.data);
+          that.setData({
+            nextGroup: res.data.items[0].userId
+          })
+
+          that.success_deliver();
+        }
+      },
+      fail: function () {
+        console.error("请求查询用户所属部门责任人失败");
+      }
+    })
+  },
+
+  success_deliver:function(){
+    var that = this;
+    var app = getApp();
+    var task = {};
+    task.businessKey = that.data.order.object.orderSn;
+    task.candiUser = that.data.nextGroup;
+    task.orderStatus = 2;
+    console.log(task);
+    wx.request({
+      url: getApp().GlobalConfig.baseUrl + "/api/TaskOrders/Process" + "/" + this.data.order.id,
+      data: task,
+      method: 'GET',
+      success: function (res) {
+        // 数据从逻辑层发送到视图层，同时改变对应的 this.data 的值
+        if (res.statusCode != 200) {
+          console.error("配送失败");
+          wx.showToast({
+            title: '配送失败',
+            icon: 'fail',
+            duration: 1500
+          })
+        } else {
+          console.log("配送成功");
+          wx.showToast({
+            title: '配送成功',
+            icon: 'fail',
+            duration: 1500
+          })
+        }
+      },
+      fail: function () {
+        console.error("配送失败");
+      }
+    })
+  }
 })

@@ -1,27 +1,29 @@
-<!-- <loading hidden="{{loading}}">
-  客观请等待...
-</loading> -->
+ <loading hidden="{{loading}}">
+  查看可抢订单
+</loading> 
 
-  <view class="list-item" wx:for="{{orders}}" wx:key="id">
+  <view class="list-item" wx:for="{{ordersList}}" wx:key="id">
     <view class="list-info" bindtap='showDetail' data-order="{{item}}">
-      <view class="list-thumb">
+       <view class="list-thumb">
         <image class="thumb" src="../../images/holder.png"></image>
         <icon class="i-play"></icon>
-      </view>
-      <view class="list-content">
+      </view> 
+
+      <view >
         <view class="list-title">
-          <text>{{item.location}}</text>
+          <text>订单号:{{item.object.orderSn}}</text>
         </view>
         <view class="list-brief">
-          <text class="wish">姓名：{{item.userName}} | </text>
-          <text>电话：{{item.phone}}</text> 
+          <text class="wish">收货人：{{item.object.recvName}} | </text>
+          <text>电话：{{item.object.recvPhone}}</text> 
         </view>
-        <view class="list-brief">{{item.createTime}}</view>
+        <view class="list-brief">{{item.object.createTime}}</view>
       </view>
     </view>
-    <view class="list-sale">
+    
+    <!-- <view class="list-sale">
       <text class="ui-btn ui-btn-red" bindtap="getOrder" data-orderindex="{{item.id}}">
-        <block>抢单</block>
+        <block>点击查看详情</block>
       </text>
-    </view>
+    </view> -->
   </view>

@@ -115,44 +115,30 @@ Page({
     var username = param.username.trim();
     var password = param.password.trim();
     var that = this;
-    //用户登录验证
-    // wx.request({
-    //   url: getApp().GlobalConfig.baseUrl + "/api/login",
-    //   data: {
-    //     id: username,
-    //     password: password
-    //   },
-    //   method: 'GET',
-    //   success: function (res) {
-    //     // 数据从逻辑层发送到视图层，同时改变对应的 this.data 的值
-    //     console.log(res);
-    //     if (res.statusCode!=200) {
-    //       that.loginFailed();
-    //     }else{
-    //       //存储用户信息
-    //       var app = getApp();
-    //       app.globalData.loginState = true;
-    //       app.globalData.userId = username;
-    //       that.loginSuc();
-    //     }
-    //   },
-    //   fail: function () {       
-    //     wx.showModal({
-    //       title: '提示',
-    //       showCancel: false,
-    //       content: '登录失败，请求错误！'
-    //     });
-    //     that.setLoginData2();
-    //   },
-    //   complete:function()
-    //   {
-
-    //   }
-    // })
-    var app = getApp();
-           app.globalData.loginState = true;
-           app.globalData.userId = username;
-           that.loginSuc();
+    wx.request({
+      url: getApp().GlobalConfig.baseUrl + "/api/sysusers/login",
+      data: {
+        userId: username,
+        password: password
+      },
+      method: 'GET',
+      success: function (res) {
+        // 数据从逻辑层发送到视图层，同时改变对应的 this.data 的值
+        if (res.statusCode == 200) {
+          //存储用户信息 
+          console.log("配送工登录");
+          console.log(res.data.userId);
+          var app = getApp();
+          app.globalData.loginState = true;
+          app.globalData.userId = res.data.userId;
+          app.globalData.phone = res.data.phone;
+          app.globalData.address = res.data.address;
+          that.loginSuc();
+        } else {
+          that.loginFailed();
+        }
+      }
+    })
   },
   navigateTo:function(param){
     wx.switchTab({
@@ -181,10 +167,6 @@ Page({
       });
       that.setLoginData2();
       that.navigateTo("../orders/orders");
-      //清空密码
-      that.setData({
-        inputPassword: null,
-      });
     }, 2000);
   }
 

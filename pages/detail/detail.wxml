@@ -1,53 +1,57 @@
-<loading hidden="{{loading}}">
+<!-- <loading hidden="{{loading}}">
   客官请等待...
-</loading>
+</loading> -->
 <!-- 概要 -->
 <view class="order-details">
   <view class="order-synopsis">
-    <view class="order-title"><text>订单号:{{order.id}}</text></view>
+    <view class="order-title"><text>订单号:{{order.object.orderSn}}</text></view>
+    <view><text class="order-rating">{{order.object.recvName}} | {{order.object.recvPhone}}</text></view>
+    <view class="order-brief">{{order.object.createTime}}</view>
+
     <view class="order-brief">
-    <text class="wish" >地址:{{order.location}}</text>
-      <image class="thumb"  bindtap='showMap' data-address="{{order.location}}"  src="../../images/maps.png"></image>
+      <text class="wish" >地址:{{deliveryAddress}}\r\n{{deliveryAddressDetail}}</text>
+      <image class="thumb"  bindtap='showMap' data-address="{{order.object.recvAddr}}"  src="../../images/maps.png"></image>
     </view>
-    <view><text class="order-rating">{{order.userName}} | {{order.phone}}</text></view>
-    <view class="order-brief">{{order.createTime}}</view>
+
   </view>
 </view>
 <!-- 订单详情 -->
 <view class="order-desc">
-  <view class="title">订单详情</view>
-  	<!-- 商品清单 -->
-	<view class="info">
+  <view class="title">商品详情</view>
 		<!-- 清单 -->
 		<view class="list">
-			<view class="item" wx:for="{{carts.carts}}" wx:key="">
-				<view class="title">{{item.goodName}}</view>
+			<view class="item" wx:for="{{order.object.orderDetailList}}" wx:key="">
+				<view class="title">{{item.goods.name}}</view>
 				<view class="quantity">{{item.quantity}}</view>
-				<view class="price">{{item.price}}</view>
+				<view class="price">{{item.dealPrice}}</view>
 			</view>
-		</view>
-    
+		
 		<!-- 配送费 -->
 		<view class="item">
-			<view class="express-label">配送费</view>
-			<view class="express-fee">0</view>
-		</view>
-		<!-- 总计 -->
-		<view class="item">
-			<view class="amount">{{total}}</view>
+			<view class="title">总价</view>
+			<view class="price">{{order.object.orderAmount}}</view>
 		</view>
 	</view>
 </view>
 
-<!-- 备注 -->
-<view class="order-comments">
-  <view class="title">备注</view>
-  <view class="order-comment">
-    <text>{{order.psText}}</text>
-  </view>
+<view class="input-log" >
+  <view class="Title">支付方式:</view>
+  <input disabled="{{true}}" class="IndexText" value="{{payMethod}}"></input>
 </view>
 
-<!-- 抢单 -->
+<view class="input-log" >
+  <view class="Title">订单状态:</view>
+  <input disabled="{{true}}" class="IndexText" value="{{orderState}}"></input>
+</view>
+
+<!-- 备注 -->
+<view class="input-log">
+  <view class="Title">订单备注:</view>
+  <input disabled="{{true}}" class="IndexText" value="{{order.object.comment}}"></input>
+</view>
+
+
+<!-- 抢单/配送至客户 客户签收 -->
 <view class="order-buy" wx:if="{{showGrab}}">
-  <text class="btn-buy" bindtap="getOrder">立即抢单</text>
+  <text class="btn-buy" bindtap="dealOrder">{{dealText}}</text>
 </view>

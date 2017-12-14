@@ -25,7 +25,7 @@
 }
 .order-brief{
   font-size: 14px;
-  height: 44rpx;
+  height: 60rpx;
   line-height: 44rpx;
 }
 .order-title, .order-brief{
@@ -270,4 +270,22 @@
   margin-top: 0px;
   width: 80rpx;
   height: 80rpx;
+}
+
+.input-log{
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  flex-direction: row;
+  height: 40px;
+}
+.Title{
+  margin-top: 20rpx;
+  margin-left: 30px;
+  font-size:14px;
+  font-weight: 700;
+}
+.IndexText{
+  margin-top: 15rpx;
+  margin-left: 20px;
+  font-size:14px;
 }

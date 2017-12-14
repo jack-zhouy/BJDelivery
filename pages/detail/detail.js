@@ -3,27 +3,104 @@ Page({
     order: {},
     carts: {},
     loading: false,
-    showGrab: false
+    showGrab: false,
+    payMethod: "",
+    orderState: "",
+    deliveryAddress: "",
+    deliveryAddressDetail:"",
+    //抢单或者完成配送text
+    dealText:"",
   },
   // 页面初始化
   onLoad: function (options) {
     // options为页面跳转所带来的参数
     var that = this;
     var order = JSON.parse(options.order);
-    var carts = JSON.parse(order.type);
     var model = options.model;
+    console.log(options.order);
+    console.log(model);
     //还没有抢的订单，需要显示抢单按钮
     if (model=='public'){
       that.setData({
         showGrab:true,
       })
+
+      if (order.object.payType == "PTOnLine") {
+        that.data.payMethod = "微信支付"
+      }
+      else {
+        that.data.payMethod = "气到付款"
+      }
+
+      if (order.object.orderStatus == 0) {
+        that.data.orderState = "待配送"
+      }
+      else if (order.object.orderStatus == 1){
+        that.data.orderState = "派送中"
+      }
+      else if (order.object.orderStatus == 2) {
+        that.data.orderState = "已签收"
+      }
+      else if (order.object.orderStatus == 3) {
+        that.data.orderState = "订单结束"
+      }
+      else{
+        that.data.orderState = "作废"
+      }
+
+      that.data.deliveryAddress = order.object.recvAddr.province + order.object.recvAddr.city
+        + order.object.recvAddr.county;
+      that.data.deliveryAddressDetail = order.object.recvAddr.detail;
+
+      that.data.dealText = "立即抢单";
+
     }
-    console.log(carts);
+
+     else if (model == 'private') {
+        that.setData({
+          showGrab: true,
+        })
+
+        if (order.object.payType == "PTOnLine") {
+          that.data.payMethod = "微信支付"
+        }
+        else {
+          that.data.payMethod = "气到付款"
+        }
+
+        if (order.object.orderStatus == 0) {
+          that.data.orderState = "待配送"
+        }
+        else if (order.object.orderStatus == 1) {
+          that.data.orderState = "派送中"
+        }
+        else if (order.object.orderStatus == 2) {
+          that.data.orderState = "已签收"
+        }
+        else if (order.object.orderStatus == 3) {
+          that.data.orderState = "订单结束"
+        }
+        else {
+          that.data.orderState = "作废"
+        }
+
+        that.data.deliveryAddress = order.object.recvAddr.province + order.object.recvAddr.city
+          + order.object.recvAddr.county;
+        that.data.deliveryAddressDetail = order.object.recvAddr.detail;
+
+        that.data.dealText = "下一步";
+      }
     that.setData({
       order: order,
-      carts: carts,
       loading: true,
+      deliveryAddress: that.data.deliveryAddress,
+      deliveryAddressDetail: that.data.deliveryAddressDetail,
+      payMethod: that.data.payMethod,
+      orderState: that.data.orderState,
+      dealText: that.data.dealText
     })
+    console.log(that.data.payMethod);
+    console.log(that.data.orderState);
   },
   // 页面初次渲染完成（每次打开页面都会调用一次）
   onReady: function () {
@@ -32,27 +109,87 @@ Page({
       title: this.data.order.location
     })
   },
-  // 抢单
-  getOrder: function () {
-    var orderIndex = this.data.order.id;
-    wx.showModal({
-      title: '订单号：' + orderIndex,
-      content: '确认抢单？',
-      showCancel: true,
-      confirmColor: '#ff4d64',
+  // 抢单/配送至客户,客户签收
+  dealOrder: function () {
+    var that = this;
+    var order = that.data.order;
+    console.log(order);
 
-      success: (res) => {
-        if (res.confirm) {
-          console.log("抢单成功！");
-          wx.switchTab({
-            url: '../orders/orders',
+    if (that.data.dealText == "立即抢单")
+    {
+      var orderIndex = this.data.order.id;
+      wx.showModal({
+        title: '任务单号：' + orderIndex,
+        content: '确认抢单？',
+        showCancel: true,
+        confirmColor: '#ff4d64',
+
+        success: (res) => {
+          if (res.confirm) {
+            console.log("提交抢单的订单");
+            that.dealTask_request();
+            // wx.switchTab({
+            //   url: '../orders/orders',
+            // })
+          }
+        },
+        fail: (res) => {
+          console.error("提交抢单失败");
+        }
+      })
+    }
+    else if (that.data.dealText == "下一步"){
+     wx.navigateTo({
+       url: '../deliver/deliver?order=' + JSON.stringify(order),
+      success: function (res) { },
+      fail: function (res) { },
+      complete: function (res) { },
+      })
+    }
+  },
+  //抢单处理请求
+  dealTask_request: function () {
+    var that = this;
+    var app = getApp();
+    console.log("后台处抢单请求");
+    var task = {};
+    task.businessKey = that.data.order.object.orderSn;
+    task.candiUser = getApp().globalData.userId;
+    task.orderStatus = 1;
+    console.log(task);
+    wx.request({
+      url: getApp().GlobalConfig.baseUrl + "/api/TaskOrders/Process" + "/" + this.data.order.id,
+      data: task,
+      method: 'GET',
+      success: function (res) {
+        // 数据从逻辑层发送到视图层，同时改变对应的 this.data 的值
+        if (res.statusCode != 200) {
+          console.error("抢单失败");
+          wx.showToast({
+            title: '抢单失败',
+            icon: 'fail',
+            duration: 1500
           })
+        } else {
+          console.log("抢单成功");
+          wx.showToast({
+            title: '抢单成功',
+            icon: 'success',
+            duration: 1500
+          });
         }
       },
-      fail: (res) => {
+      fail: function () {
+        console.error("抢单失败");
+        wx.showToast({
+          title: '抢单失败',
+          icon: 'fail',
+          duration: 1500
+        })
       }
     })
   },
+
   showMap: function (e) {
     var address = e.currentTarget.dataset.address;
     var that = this;

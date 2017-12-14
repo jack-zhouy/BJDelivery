@@ -24,8 +24,8 @@
     "list": [
       {
         "pagePath": "pages/orders/orders",
-        "iconPath": "images/icon1.png",
-        "selectedIconPath": "images/icon1s.png",
+        "iconPath": "images/holder.png",
+        "selectedIconPath": "images/holder.png",
         "text": "待抢订单"
       },
       {

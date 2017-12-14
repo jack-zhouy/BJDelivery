@@ -1,15 +1,13 @@
 Page({
   //数据源
   data: {
-    orders: [
-      { "id": 1, "userId": "kehu-1", "userName": "王然", "location": "南京栖霞区丁香花园8栋909", "phone": "18722334456", "number": "1", "psText": "下午送", "createTime": "2017-10-19 13:33:52", "updateTime": "2017-10-20 09:50:10", "taskId": "74", "type": "{\"carts\":[{\"goodName\":\"桶装水\",\"quantity\":\"5\",\"price\":\"100\"},{\"goodName\":\"煤气灶\",\"quantity\":\"3\",\"price\":\"300\"},{\"goodName\":\"角阀\",\"quantity\":\"1\",\"price\":\"20\"}]}" }, 
-      { "id": 2, "userId": "kehu-2", "userName": "周远", "location": "南京雨花台区善水湾花园4栋308", "phone": "13722334456", "number": "1", "psText": "白天送", "createTime": "2017-10-19 13:33:52", "updateTime": "2017-11-01 18:23:24", "taskId": "77", "type": "{\"carts\":[{\"goodName\":\"桶装水\",\"quantity\":\"5\",\"price\":\"100\"},{\"goodName\":\"煤气灶\",\"quantity\":\"3\",\"price\":\"300\"},{\"goodName\":\"角阀\",\"quantity\":\"1\",\"price\":\"20\"}]}" }, 
-      { "id": 3, "userId": "kehu-2", "userName": "里子群", "location": "南京中电28所东区", "phone": "13700000456", "number": "1", "psText": "白天送", "createTime": "2017-10-19 13:33:52", "updateTime": "2017-11-01 18:23:47", "taskId": "80", "type": "{\"carts\":[{\"goodName\":\"桶装水\",\"quantity\":\"5\",\"price\":\"100\"},{\"goodName\":\"煤气灶\",\"quantity\":\"3\",\"price\":\"300\"},{\"goodName\":\"角阀\",\"quantity\":\"1\",\"price\":\"20\"}]}" }],
+    //配送工已抢到的订单
+    ordersList: [],
     // loading: false,
     loading: true,
     limit: 6,
     windowHeight: 0,
-    scrollTop: 100
+    scrollTop: 100,
   },
   onPullDownRefresh:function(){
     wx.showNavigationBarLoading() //在标题栏中显示加载
@@ -22,28 +20,32 @@ Page({
   },
 
   requestData: function (a) {
-    var that = this
-    //查询我可以抢的订单
-    // wx.request({
-    //   url: getApp().GlobalConfig.baseUrl+"/api/orders/mytask", 
-    //   data: {
-    //     userId: getApp().globalData.userId
-    //   },
-    //   method:'GET',
-    //   success: function(res) {
-    //     // 数据从逻辑层发送到视图层，同时改变对应的 this.data 的值
-    //     console.log(res.data);
-    //     that.setData({
-    //       orders: res.data.items,
-    //       loading: true
-    //     })
-    //   },
-    //   fail: function()
-    //   {
-    //      console.log("failed");
-    //   }
-    // })
-   // 获取系统信息
+    var that = this;
+    var app = getApp();
+    console.log("后台查询已抢到的任务单");
+
+    wx.request({
+      url: getApp().GlobalConfig.baseUrl + "/api/TaskOrders" + "/" + app.globalData.userId + "?",
+      data: {
+        orderStatus: 1
+      },
+      method: 'GET',
+      success: function (res) {
+        // 数据从逻辑层发送到视图层，同时改变对应的 this.data 的值
+        console.log(res.data);
+        that.setData({
+          ordersList: res.data.items,
+          loading: true
+        })
+        console.log("ordersList:");
+        console.log(that.data.ordersList);
+      },
+      fail: function () {
+        console.error("failed");
+      }
+    })
+
+    // 获取系统信息
     wx.getSystemInfo({
       success: (res) => {
         that.setData({
@@ -60,13 +62,14 @@ Page({
   onShow:function(){
     var app = getApp();
     //如果没有登录就跳转到登录页面
-    if (!app.globalData.loginState) {
-      wx.navigateTo({
-        url: '../index/index',
-      })
-    } else{
-      this.requestData();
-    }
+    // if (!app.globalData.loginState) {
+    //   wx.navigateTo({
+    //     url: '../index/index',
+    //   })
+    // } else{
+    //   this.requestData();
+    // }
+    this.requestData();
   },
   // 页面初次渲染完成（每次打开页面都会调用一次）
   onReady:function(){
@@ -81,15 +84,15 @@ Page({
     
   },
   // 订单处理
-  dealOrder: function (e) {
-    var order = e.currentTarget.dataset.order;
-     wx.navigateTo({
-       url: '../deliver/deliver?order=' + JSON.stringify(order),
-      success: function (res) { },
-      fail: function (res) { },
-      complete: function (res) { },
-    })
-  },
+  // dealOrder: function (e) {
+  //   var order = e.currentTarget.dataset.order;
+  //    wx.navigateTo({
+  //      url: '../deliver/deliver?order=' + JSON.stringify(order),
+  //     success: function (res) { },
+  //     fail: function (res) { },
+  //     complete: function (res) { },
+  //   })
+  // },
   showDetail:function(e){
     
     var order = e.currentTarget.dataset.order;
