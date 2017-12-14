@@ -67,6 +67,7 @@ Page({
   // 页面初次渲染完成（每次打开页面都会调用一次）
   onReady:function(){ 
     var that = this;
+    this.uploadLocation();
     setInterval(that.uploadLocation, 5000); 
   },
   // 页面隐藏（当navigateTo或底部tab切换时调用）

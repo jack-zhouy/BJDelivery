@@ -193,7 +193,7 @@ Page({
   showMap: function (e) {
     var address = e.currentTarget.dataset.address;
     var that = this;
-    that.getLocation(address);
+    that.getLocation(address.province + address.city + address.county + address.detail);
   },
   //逆向地址解析
   getLocation: function (address) {
@@ -206,6 +206,7 @@ Page({
       },
       success: function (res) {
         // success
+        console.log(res.data  );
         var strLocation = res.data.geocodes[0].location;
         var searchedAddress = res.data.geocodes[0].formatted_address;
         var location = {};
