@@ -69,6 +69,24 @@ Page({
     wx.navigateTo({
       url: '../index/index',
     })
-  }
+  },
+
+//查看历史订单
+  navigateToCheckOrderHistory: function () {
+    //var app = getApp();
+    //如果没有登录就跳转到登录页面
+    // if ((!app.globalData.loginState) && (app.globalData.userId == null)) {
+    //   wx.navigateTo({
+    //     url: '../login/login',
+    //   })
+    // } else {
+      wx.reLaunch({
+        url: '../orders/orders?' + '&model=checkOrderHistory',
+        success: function (res) { },
+        fail: function (res) { },
+        complete: function (res) { },
+      })
+    //}
+  },
 
 }) 

@@ -90,17 +90,26 @@
 
  <view class="item" wx:key="">
         <view class="title">5. 用户签收</view>  
-                <input  class="express-pay"  disabled='true' wx:if='{{uploadCertificateFlag}}' value='用户单据已上传'></input>
+          <input  class="express-pay"  disabled='true' wx:if='{{uploadCertificateFlag}}' value='用户单据已上传'></input>
         <view class="list-thumb">
           <image class="thumb2" src="../../images/empty.jpg" ></image>
         </view>
-      </view>
+  </view>
+
       <view class="item">
         <view class="express-label">单据上传：</view>
         <view class="list-thumb">
           <image class="thumb2" src="../../images/qrcode.jpg" bindtap='uploadCertificate'></image>
         </view> 
       </view>
+
+      <!-- <view class="item">
+        <view class="express-label">钢瓶号图片上传：</view>
+        <view class="list-thumb">
+          <image class="thumb2" src="../../images/qrcode.jpg" bindtap='chooseimage'></image>
+        </view> 
+      </view> -->
+
       <view class="item">
        <image class="thumb3" src="{{tempFilePaths}}"></image>
       </view>

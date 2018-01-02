@@ -170,13 +170,22 @@ Page({
             icon: 'fail',
             duration: 1500
           })
+
         } else {
           console.log("抢单成功");
           wx.showToast({
             title: '抢单成功',
             icon: 'success',
-            duration: 1500
+            duration: 2000,
+            success: function (){
+              setTimeout(function () {
+                wx.switchTab({
+                  url: '../myorders/myorders',
+                })
+              }, 1500);
+            }
           });
+
         }
       },
       fail: function () {

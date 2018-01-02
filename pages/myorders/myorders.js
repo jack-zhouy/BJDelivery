@@ -23,7 +23,6 @@ Page({
     var that = this;
     var app = getApp();
     console.log("后台查询已抢到的任务单");
-
     wx.request({
       url: getApp().GlobalConfig.baseUrl + "/api/TaskOrders" + "/" + app.globalData.userId + "?",
       data: {
@@ -59,7 +58,8 @@ Page({
     
   },  
   // 页面显示（一个页面只会调用一次）
-  onShow:function(){
+  onShow: function (){
+    var that = this;
     var app = getApp();
     //如果没有登录就跳转到登录页面
     // if (!app.globalData.loginState) {
@@ -70,6 +70,8 @@ Page({
     //   this.requestData();
     // }
     this.requestData();
+ 
+
   },
   // 页面初次渲染完成（每次打开页面都会调用一次）
   onReady:function(){
@@ -93,8 +95,8 @@ Page({
   //     complete: function (res) { },
   //   })
   // },
-  showDetail:function(e){
-    
+//显示订单详情
+  showDetail:function(e){  
     var order = e.currentTarget.dataset.order;
     console.log(JSON.stringify(order));
     wx.navigateTo({
