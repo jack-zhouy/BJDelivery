@@ -314,3 +314,7 @@
   height: 300rpx;
   margin-left: 90px;
 }
+
+.picker1{
+  margin-left: -50px;
+}

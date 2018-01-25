@@ -2,6 +2,7 @@
   客官请等待...
 </loading> -->
 <!-- 概要 -->
+
 <view class="order-details">
   <view class="order-synopsis">
     <view class="order-title"><text>订单号:{{order.object.orderSn}}</text></view>
@@ -12,9 +13,9 @@
       <text class="wish" >地址:{{deliveryAddress}}\r\n{{deliveryAddressDetail}}</text>
       <image class="thumb"  bindtap='showMap' data-address="{{order.object.recvAddr}}"  src="../../images/maps.png"></image>
     </view>
-
   </view>
 </view>
+
 <!-- 订单详情 -->
 <view class="order-desc">
   <view class="title">商品详情</view>
@@ -40,6 +41,11 @@
 </view>
 
 <view class="input-log" >
+  <view class="Title">支付状态:</view>
+  <input disabled="{{true}}" class="IndexText" value="{{payStatus}}"></input>
+</view>
+
+<view class="input-log" >
   <view class="Title">订单状态:</view>
   <input disabled="{{true}}" class="IndexText" value="{{orderState}}"></input>
 </view>
@@ -58,6 +64,6 @@
 
 
 <!-- 抢单/配送至客户 客户签收 -->
-<view class="order-buy" wx:if="{{showGrab}}">
-  <text class="btn-buy" bindtap="dealOrder">{{dealText}}</text>
-</view>
+<view class="order-buy " wx:if="{{showGrab}}">
+  <text class="btn-buy" bindtap="dealOrder">{{dealText}}</text> 
+</view> 

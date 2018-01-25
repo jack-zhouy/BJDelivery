@@ -47,7 +47,8 @@ Page({
     console.log("options.order");
     console.log(options.order);
 
-    if (order.object.payType == "PTOnLine") {
+    //if (order.object.payType == "PTOnLine") {
+    if (order.object.payType.index == 0) {
       that.data.payType = "微信支付"
     }
     else {

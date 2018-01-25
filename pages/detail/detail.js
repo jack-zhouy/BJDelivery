@@ -5,6 +5,7 @@ Page({
     loading: false,
     showGrab: false,
     payMethod: "",
+    payStatus:"",
     orderState: "",
     deliveryAddress: "",
     deliveryAddressDetail:"",
@@ -17,7 +18,7 @@ Page({
     var that = this;
     var order = JSON.parse(options.order);
     var model = options.model;
-    console.log(options.order);
+    console.log(order);
     console.log(model);
     //还没有抢的订单，需要显示抢单按钮
     if (model=='public'){
@@ -25,7 +26,8 @@ Page({
         showGrab:true,
       })
 
-      if (order.object.payType == "PTOnLine") {
+      //if (order.object.payType == "PTOnLine") {
+      if (order.object.payType.index == 0) {
         that.data.payMethod = "微信支付"
       }
       else {
@@ -48,6 +50,21 @@ Page({
         that.data.orderState = "作废"
       }
 
+      if (order.object.payStatus.index == 0)
+      {
+        that.data.payStatus = "待支付"
+      }
+      if (order.object.payStatus.index == 1) {
+        that.data.payStatus = "已支付"
+      }
+      if (order.object.payStatus.index == 2) {
+        that.data.payStatus = "退款中"
+      }
+      else if (order.object.payStatus.index == 3) {
+      
+        that.data.payStatus = "已退款"
+      }
+
       that.data.deliveryAddress = order.object.recvAddr.province + order.object.recvAddr.city
         + order.object.recvAddr.county;
       that.data.deliveryAddressDetail = order.object.recvAddr.detail;
@@ -61,7 +78,7 @@ Page({
           showGrab: true,
         })
 
-        if (order.object.payType == "PTOnLine") {
+        if (order.object.payType.index == 0) {
           that.data.payMethod = "微信支付"
         }
         else {
@@ -84,6 +101,19 @@ Page({
           that.data.orderState = "作废"
         }
 
+        if (order.object.payStatus.index == 0) {
+          that.data.payStatus = "待支付"
+        }
+        if (order.object.payStatus.index == 1) {
+          that.data.payStatus = "已支付"
+        }
+        if (order.object.payStatus.index == 2) {
+          that.data.payStatus = "退款中"
+        }
+        else if (order.object.payStatus.index == 3) 
+        {
+            that.data.payStatus = "已退款"
+        }
         that.data.deliveryAddress = order.object.recvAddr.province + order.object.recvAddr.city
           + order.object.recvAddr.county;
         that.data.deliveryAddressDetail = order.object.recvAddr.detail;
@@ -96,6 +126,7 @@ Page({
       deliveryAddress: that.data.deliveryAddress,
       deliveryAddressDetail: that.data.deliveryAddressDetail,
       payMethod: that.data.payMethod,
+      payStatus:that.data.payStatus,
       orderState: that.data.orderState,
       dealText: that.data.dealText
     })
