@@ -6,13 +6,15 @@ Page({
     oldBottle: {},
     newBottle: {},
     securityCheckTypes: [
-      "胶管不合格，请予更换",
-      "调压阀不合格，请予更换",
-      "灶具不合格，请予更换",
-      "用气环境不合格，请予调整",
-      "自换",
-      "已对用户做用气安全培训"
+      '胶管不合格，请予更换',
+      '调压阀不合格，请予更换',
+      '灶具不合格，请予更换',
+      '用气环境不合格，请予调整',
+      '已对用户做用气安全培训',
+      '安全检查合格',
+      '用户自行跟换相关配件',
     ],
+    index: 0,
     payTypes: [
       "扫码支付",
       "现金支付"
@@ -32,6 +34,9 @@ Page({
     deliveryAddress: "",
     deliveryAddressDetail: "",
     nextGroup:"",
+    emptyBottleNumber:"",
+    fullBottleNumber:"",
+    customerUserId:""
 
   },
   // 页面初始化
@@ -68,6 +73,8 @@ Page({
 
     that.data.addedPayFee = order.object.orderAmount;
 
+    that.data.customerUserId = order.object.customer.userId;
+
     that.setData({
       order: order,
       loading: true,
@@ -75,7 +82,8 @@ Page({
       deliveryAddressDetail: that.data.deliveryAddressDetail,
       addedPayFee: that.data.addedPayFee,
       payType: that.data.payType,
-      payState: that.data.payState
+      payState: that.data.payState,
+      customerUserId: that.data.customerUserId
     })
   },
   // 页面初次渲染完成（每次打开页面都会调用一次）
@@ -197,13 +205,17 @@ Page({
     })
   },
   bindSecurityCheckChange: function (e) {
-    var index = e.detail.value;
-    var securityType = this.data.securityCheckTypes[index];
-    this.data.securityCheckResult.push(securityType);
+    // var index = e.detail.value;
+    // var securityType = this.data.securityCheckTypes[index];
+    // this.data.securityCheckResult.push(securityType);
+    // this.setData({
+    //   securityCheckResult: this.data.securityCheckResult,
+    // })
+    // //console.log(this.data.securityCheckResult);
+
     this.setData({
-      securityCheckResult: this.data.securityCheckResult,
+      index: e.detail.value
     })
-    console.log(this.data.securityCheckResult);
   },
 
   deleteSecurityCheck: function (e) {
@@ -219,9 +231,7 @@ Page({
   //上传用户单据
   uploadCertificate: function () {
     var that = this;
-
-
-    wx.chooseImage({
+     wx.chooseImage({
       count: 1, // 默认9
       sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
       sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
@@ -306,9 +316,13 @@ Page({
 
   successDelivery:function(){
     var that = this;
+    that.upload_emptyBottleNumber();
+    that.upload_fullBottleNumber();
     that.GetDepLeader_request();
+
   },
 
+//查询配送工下一个负责人
   GetDepLeader_request:function(){
     var that = this;
     var app = getApp();
@@ -383,5 +397,124 @@ Page({
         console.error("配送失败");
       }
     })
-  }
+  },
+
+  //空钢瓶号输入
+  emptyBottleNumInput: function (e) {
+    var that = this;
+    // if (e.detail.value.length > 0) {
+    //   this.setData({
+    //     emptyBottleNumber: e.detail.value
+    //   })
+    // }
+    // else {
+    //   wx.showModal({
+    //     title: '提示',
+    //     showCancel: false,
+    //     content: '请输入正确的空瓶号'
+    //   });
+    // }
+    this.setData({
+        emptyBottleNumber: e.detail.value
+    })
+    console.log(that.data.emptyBottleNumber);
+  },
+
+  //重钢瓶号输入
+  fullBottleNumInput: function (e) {
+    var that = this;
+    // if (e.detail.value.length > 0) {
+    //   this.setData({
+    //     fullBottleNumber: e.detail.value
+    //   })
+    // }
+    // else{
+    //   wx.showToast({
+    //     title: '请输入正确的重瓶号',
+    //     icon: 'fail',
+    //     duration: 2000,
+    //   });
+    // }
+    this.setData({
+        fullBottleNumber: e.detail.value
+    })
+   console.log(that.data.fullBottleNumber);
+  },
+
+  //上传空钢瓶号
+  upload_emptyBottleNumber: function () {
+    var that = this;
+    var app = getApp();
+    
+    console.log("上传空钢瓶号码");
+    // var flag = this.checkEmptyBottleNum();
+    // if(flag){
+      wx.request({
+        url: getApp().GlobalConfig.baseUrl + "/api/GasCylinder/TakeOver" + '/' + this.data.emptyBottleNumber + '?srcUserId=' + that.data.customerUserId + '&targetUserId=' + app.globalData.userId + '&serviceStatus=5',
+        method: 'PUT',
+        success: function (res) {
+          if (res.statusCode == 200) {
+            console.log("空钢瓶号上传成功");
+            // //不管空瓶号是否上传成功均上传重钢瓶号
+            // that.upload_fullBottleNumber();
+          } 
+          else if (res.statusCode == 404){
+            console.error("钢瓶或用户不存在"); 
+            //that.upload_fullBottleNumber();           
+          }
+          else if (res.statusCode == 406){
+            console.error("责任人校验错误"); 
+            //that.upload_fullBottleNumber();           
+          }
+          else if (res.statusCode == 400) {
+            console.error("参数错误");
+            //that.upload_fullBottleNumber();
+          }
+        },
+        fail: function () {
+          console.error("上传空钢瓶号失败");
+          // //不管空瓶号是否上传成功均上传重钢瓶号
+          // that.upload_fullBottleNumber();
+        }
+      })
+    //}
+  },
+
+  //上传重钢瓶号
+  upload_fullBottleNumber: function () {
+    var that = this;
+    var app = getApp();
+    console.log("上传重钢瓶号码");
+    // var flag = this.checkFullBottleNum(param);
+    if (that.data.fullBottleNumber.length > 0) {
+      wx.request({
+        url: getApp().GlobalConfig.baseUrl + "/api/GasCylinder/TakeOver" + '/' + this.data.fullBottleNumber + '?srcUserId=' + app.globalData.userId + '&targetUserId=' + that.data.customerUserId + '&serviceStatus=2',
+        method: 'PUT',
+        success: function (res) {
+          if (res.statusCode == 200) {
+            console.log("重钢瓶号上传成功");
+            // //如成功调接口查询配送工的下一个责任人
+            // that.GetDepLeader_request();
+          }
+          else if (res.statusCode == 404) {
+            console.error("钢瓶或用户不存在");
+          }
+          else if (res.statusCode == 406) {
+            console.error("参数错误/责任人校验错误");
+          }
+        },
+        fail: function () {
+          console.error("上传重钢瓶号失败");
+        }
+      })
+    }
+    else
+    {
+        wx.showToast({
+        title: '请输入正确的重瓶号',
+        icon: 'fail',
+        duration: 2000,
+      });
+    }
+  },
 })

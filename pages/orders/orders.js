@@ -30,29 +30,44 @@ Page({
   onLoad: function (options) {
     var that = this;
     var app = getApp();
-    var model = options.model;
-    console.log("model:");
-    console.log(model);
-    if (model == "checkOrderHistory") {
-      this.requestOrderHistory();
-      that.data.navigationBarTitle = "历史订单";
-    }
-    else{
-      wx.getLocation({
-        type: 'wgs84',
-        success: function (res) {
-          var latitude = res.latitude
-          var longitude = res.longitude
-          that.setData({
-            longitude: longitude,
-            latitude: latitude
-          });
-        }
-      }) 
-      that.data.navigationBarTitle = "待抢订单";   
-      this.uploadLocation();
-      setInterval(that.uploadLocation, 5000); 
-    }
+    // var model = options.model;
+    // console.log("model:");
+    // console.log(model);
+    // if (model == "checkOrderHistory") {
+    //   this.requestOrderHistory();
+    //   that.data.navigationBarTitle = "历史订单";
+    // }
+    // else{
+    //   wx.getLocation({
+    //     type: 'wgs84',
+    //     success: function (res) {
+    //       var latitude = res.latitude
+    //       var longitude = res.longitude
+    //       that.setData({
+    //         longitude: longitude,
+    //         latitude: latitude
+    //       });
+    //     }
+    //   }) 
+    //   that.data.navigationBarTitle = "待抢订单";   
+    //   this.uploadLocation();
+    //   setInterval(that.uploadLocation, 5000); 
+    // }
+
+    wx.getLocation({
+      type: 'wgs84',
+      success: function (res) {
+        var latitude = res.latitude
+        var longitude = res.longitude
+        that.setData({
+          longitude: longitude,
+          latitude: latitude
+        });
+      }
+    })
+    that.data.navigationBarTitle = "待抢订单";
+    this.uploadLocation();
+    setInterval(that.uploadLocation, 5000); 
 
     wx.setNavigationBarTitle({
       title: that.data.navigationBarTitle

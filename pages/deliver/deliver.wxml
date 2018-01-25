@@ -28,22 +28,25 @@
   <view class="info">
     <view class="list">
 
+    <form>
       <view class="item" wx:key="">
         <view class="title">1. 空瓶录入</view>  
-         <input  class="express-gas" placeholder='我要手动输入' value='{{oldBottle.id}}'></input>
+         <!-- <input  class="express-gas" placeholder='我要手动输入' value='{{oldBottle.id}}'></input> -->
+         <input  class="express-gas" placeholder='请手动输入空钢瓶号' bindinput="emptyBottleNumInput"></input>
         <view class="list-thumb">
           <image class="thumb2" src="../../images/qrcode.jpg" bindtap='scanOldId'></image>
         </view>
       </view>
 
-
         <view class="item" wx:key="">
         <view class="title">2. 重瓶录入</view>  
-        <input  class="express-gas" placeholder='我要手动输入' value='{{newBottle.id}}'></input>
+        <!-- <input  class="express-gas" placeholder='我要手动输入' value='{{newBottle.id}}'></input> -->
+         <input  class="express-gas" placeholder='请手动输入重钢瓶号' bindinput="fullBottleNumInput"></input>
         <view class="list-thumb">
           <image class="thumb2" src="../../images/qrcode.jpg" bindtap='scanNewId'></image>
         </view>
       </view>
+    </form>
 
         <view class="item" wx:key="">
         <view class="title">3. 用户付款</view>  
@@ -55,14 +58,15 @@
       <view class="item">
         <view class="express-label">线下需支付金额(元)：</view>
         <input type='digit' class="express-gas" value='{{addedPayFee}}' bindinput='addedPayFeeChanged'></input>
-                <view class="list-thumb">
+          <view class="list-thumb">
           <image class="thumb2" src="../../images/empty.jpg" ></image>
         </view>
       </view>
-            <view class="item">
+      
+      <view class="item">
         <view class="express-label">支付方式：</view>
          <input  class="express-gas"  value='{{payType}}' disabled='true'></input>
-               <view class="list-thumb">
+        <view class="list-thumb">
           <picker id="securityCheck" range="{{payTypes}}" bindchange='bindPayTypesChange'>
             <image class="thumb2" src="../../images/pay.png"></image>
           </picker>
@@ -74,18 +78,20 @@
 
       <view class="item" wx:key="">
         <view class="title">4. 安全检查</view>
-        <view class="list-thumb">
-          <picker id="securityCheck" range="{{securityCheckTypes}}" bindchange='bindSecurityCheckChange'>
-            <image class="thumb2" src="../../images/security.png"></image>
+        
+          <picker id="securityCheck" value="{{index}}" range="{{securityCheckTypes}}" bindchange='bindSecurityCheckChange'>
+            <view class="express-gas">{{securityCheckTypes[index]}}</view>
           </picker>
+          <view class="list-thumb">
+          <image class="thumb2" src="../../images/security.png"></image>
         </view>
       </view>
-      <view class="item" wx:for="{{securityCheckResult}}">
+      <!-- <view class="item" wx:for="{{securityCheckResult}}">
         <view class="express-label">{{item}}</view>
         <view class="list-thumb">
           <image class="thumb2" src="../../images/delete.png" bindtap='deleteSecurityCheck' data-index='{{index}}'></image>
         </view>
-      </view>
+      </view> -->
 
 
  <view class="item" wx:key="">

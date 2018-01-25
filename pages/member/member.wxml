@@ -24,7 +24,7 @@
 <!-- 列表 -->
 <view class="listview">
 	<!-- <view class="item" bindtap='navigateToCheckOrderHistory'> -->
-  <view class="item" bindtap='navigateToCheckOrderHistory'>
+  <view class="item" >
 		<image class="hd" src="../../images/holder.png" />
 		<view class="bd" open-type="navigate" hover-class="none">历史订单</view>
 		<view class="ft"></view>
