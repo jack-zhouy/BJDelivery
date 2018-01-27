@@ -23,13 +23,19 @@
 </view>
 <!-- 列表 -->
 <view class="listview">
+	 <view class="item" bindtap='navigateToCheckMybottle'>
+		<image class="hd" src="/images/bottom.jpg" />
+		<navigator class="bd" open-type="navigate" hover-class="none">我的气瓶</navigator>
+		<view class="ft"></view>
+	 </view> 
+
 	<!-- <view class="item" bindtap='navigateToCheckOrderHistory'> -->
-  <view class="item" >
+  <!-- <view class="item" >
 		<image class="hd" src="../../images/holder.png" />
 		<view class="bd" open-type="navigate" hover-class="none">历史订单</view>
 		<view class="ft"></view>
-	</view>
-</view>
+	</view>-->
+</view> 
 <!-- 管理员 -->
 <view class="listview" >
 
@@ -48,6 +54,7 @@
 		<navigator class="bd" url="../../food/list/list" open-type="navigate" hover-class="none">投诉建议</navigator>
 		<view class="ft"></view>
 	</view>
+
 </view>
 <!-- 退出登录 -->
 <view class="order-buy">

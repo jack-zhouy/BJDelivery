@@ -13,13 +13,17 @@ Page({
     limit: 6,
     windowHeight: 0,
     scrollTop: 100,
-    navigationBarTitle:"待抢订单",
-    model:"neededToBeDealed"
+    //navigationBarTitle:"待抢订单",
+    model:"neededToBeDealed",
+    // deliveryAddress:"",
+    // deliveryAddressDetail:"",
+
 
   },
   onPullDownRefresh:function(){
     wx.showNavigationBarLoading() //在标题栏中显示加载
-    //this.requestData();
+
+    this.upload_requestOrder();
     //模拟加载
     setTimeout(function () {
       wx.hideNavigationBarLoading() //完成停止加载
@@ -29,50 +33,7 @@ Page({
   // 页面初始化
   onLoad: function (options) {
     var that = this;
-    var app = getApp();
-    // var model = options.model;
-    // console.log("model:");
-    // console.log(model);
-    // if (model == "checkOrderHistory") {
-    //   this.requestOrderHistory();
-    //   that.data.navigationBarTitle = "历史订单";
-    // }
-    // else{
-    //   wx.getLocation({
-    //     type: 'wgs84',
-    //     success: function (res) {
-    //       var latitude = res.latitude
-    //       var longitude = res.longitude
-    //       that.setData({
-    //         longitude: longitude,
-    //         latitude: latitude
-    //       });
-    //     }
-    //   }) 
-    //   that.data.navigationBarTitle = "待抢订单";   
-    //   this.uploadLocation();
-    //   setInterval(that.uploadLocation, 5000); 
-    // }
-
-    wx.getLocation({
-      type: 'wgs84',
-      success: function (res) {
-        var latitude = res.latitude
-        var longitude = res.longitude
-        that.setData({
-          longitude: longitude,
-          latitude: latitude
-        });
-      }
-    })
-    that.data.navigationBarTitle = "待抢订单";
-    this.uploadLocation();
-    setInterval(that.uploadLocation, 5000); 
-
-    wx.setNavigationBarTitle({
-      title: that.data.navigationBarTitle
-    })
-
+    //this.upload_requestOrder();
   },  
 
 
@@ -96,13 +57,11 @@ Page({
     //     url: '../index/index',
     //   })
     // }
- 
+    var that = this;
+    this.upload_requestOrder();
   },
   // 页面初次渲染完成（每次打开页面都会调用一次）
   onReady:function(){ 
-    var that = this;
-    // this.uploadLocation();
-    // setInterval(that.uploadLocation, 5000); 
   },
   // 页面隐藏（当navigateTo或底部tab切换时调用）
   onHide:function(){   
@@ -111,40 +70,28 @@ Page({
   onUnload:function(){   
   },
   
-  //查询历史订单 订单状态应为已配送orderStatus: 2
-  requestOrderHistory: function () {
+  //上传配送工位置信息，成功后请求可抢订单
+  upload_requestOrder:function(){
     var that = this;
-    var app = getApp();
-    console.log("后台查询已配送完成的任务单");
-    wx.request({
-      url: getApp().GlobalConfig.baseUrl + "/api/TaskOrders" + "/" + app.globalData.userId + "?",
-      data: {
-        orderStatus: 2
-      },
-      method: 'GET',
-      success: function (res) {
-        // 数据从逻辑层发送到视图层，同时改变对应的 this.data 的值
-        console.log(res.data);
-        that.setData({
-          ordersList: res.data.items,
-          loading: true,
-        })
-        console.log("已配送完成的订单ordersList:");
-        console.log(that.data.ordersList);
-      },
-      fail: function () {
-        console.error("failed");
-      }
-    })
 
-    // 获取系统信息
-    wx.getSystemInfo({
-      success: (res) => {
+    wx.getLocation({
+      type: 'wgs84',
+      success: function (res) {
+        var latitude = res.latitude
+        var longitude = res.longitude
         that.setData({
-          windowHeight: res.windowHeight
-        })
+          longitude: longitude,
+          latitude: latitude
+        });
       }
     })
+    //that.data.navigationBarTitle = "待抢订单";
+    this.uploadLocation();
+    setInterval(that.uploadLocation, 5000);
+
+    // wx.setNavigationBarTitle({
+    //   title: that.data.navigationBarTitle
+    // })
   },
 
 
@@ -208,24 +155,6 @@ Page({
     })
   },
 
-  // // 配送工抢单
-  // getOrder: function (e) {
-  //   var orderIndex = e.currentTarget.dataset.orderindex;
-  //   wx.showModal({
-  //     title: '订单号：'+orderIndex,
-  //     content: '确认抢单？',
-  //     showCancel: true,   
-  //     confirmColor: '#ff4d64',
-
-  //     success: (res) => {
-  //       if (res.confirm){
-  //         console.log("抢单成功！");
-  //         }
-  //     },
-  //     fail: (res) => {
-  //     }
-  //   })
-  // },
   showDetail:function(e){ 
     var order = e.currentTarget.dataset.order;
     console.log(JSON.stringify(order));

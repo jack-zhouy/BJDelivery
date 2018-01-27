@@ -4,21 +4,34 @@
 
   <view class="list-item" wx:for="{{ordersList}}" wx:key="id">
     <view class="list-info" bindtap='showDetail' data-order="{{item}}">
-       <view class="list-thumb">
+      <view class="list-thumb">
         <image class="thumb" src="../../images/holder.png"></image>
         <icon class="i-play"></icon>
       </view> 
-
-      <view >
-        <view class="list-title">
+     
+      <view>
+        <!-- <view class="list-title">
           <text>订单号:{{item.object.orderSn}}</text>
+        </view> -->
+        <view class="list-brief">
+          <text >下单时间：{{item.object.createTime}}</text>
+        </view>
+
+        <view class="list-brief">
+          <text >收货人：{{item.object.recvName}} | </text>
+          <text >电话：{{item.object.recvPhone}}</text> 
+        </view>
+
+        <view class="list-brief">
+          <text class="wish">地址:{{item.object.recvAddr.province + item.object.recvAddr.city
+            + item.object.recvAddr.county}}</text>
         </view>
         <view class="list-brief">
-          <text class="wish">收货人：{{item.object.recvName}} | </text>
-          <text>电话：{{item.object.recvPhone}}</text> 
+            <text class="wish">{{item.object.recvAddr.detail}}</text>
         </view>
-        <view class="list-brief">{{item.object.createTime}}</view>
+
       </view>
+
     </view>
     
     <!-- <view class="list-sale">

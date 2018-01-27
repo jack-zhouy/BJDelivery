@@ -28,7 +28,7 @@
   <view class="info">
     <view class="list">
 
-    <form>
+ 
       <view class="item" wx:key="">
         <view class="title">1. 空瓶录入</view>  
          <!-- <input  class="express-gas" placeholder='我要手动输入' value='{{oldBottle.id}}'></input> -->
@@ -38,7 +38,7 @@
         </view>
       </view>
 
-        <view class="item" wx:key="">
+      <view class="item" wx:key="">
         <view class="title">2. 重瓶录入</view>  
         <!-- <input  class="express-gas" placeholder='我要手动输入' value='{{newBottle.id}}'></input> -->
          <input  class="express-gas" placeholder='请手动输入重钢瓶号' bindinput="fullBottleNumInput"></input>
@@ -46,26 +46,31 @@
           <image class="thumb2" src="../../images/qrcode.jpg" bindtap='scanNewId'></image>
         </view>
       </view>
-    </form>
 
-        <view class="item" wx:key="">
+
+      <view class="item" wx:key="">
         <view class="title">3. 用户付款</view>  
         <input  class="express-pay" value="{{payState}}" disabled='true'></input>
         <view class="list-thumb">
           <image class="thumb2" src="../../images/empty.jpg" ></image>
         </view>
       </view>
+
       <view class="item">
-        <view class="express-label">线下需支付金额(元)：</view>
+        <view class="express-label">支付金额：</view>
         <input type='digit' class="express-gas" value='{{addedPayFee}}' bindinput='addedPayFeeChanged'></input>
-          <view class="list-thumb">
+          <!-- <view class="list-thumb">
           <image class="thumb2" src="../../images/empty.jpg" ></image>
+        </view> -->
+        <view class="list-thumb">
+          <view class="express-label">(元)</view>
         </view>
+
       </view>
       
       <view class="item">
         <view class="express-label">支付方式：</view>
-         <input  class="express-gas"  value='{{payType}}' disabled='true'></input>
+        <input  class="express-gas"  value='{{payType}}' disabled='true'></input> 
         <view class="list-thumb">
           <picker id="securityCheck" range="{{payTypes}}" bindchange='bindPayTypesChange'>
             <image class="thumb2" src="../../images/pay.png"></image>
@@ -76,16 +81,15 @@
        <image class="thumb-qrcode" src="{{qrCodeUrl}}"></image>
       </view>
 
-      <view class="item" wx:key="">
+      <!-- <view class="item" wx:key="">
         <view class="title">4. 安全检查</view>
-        
           <picker id="securityCheck" value="{{index}}" range="{{securityCheckTypes}}" bindchange='bindSecurityCheckChange'>
             <view class="express-gas">{{securityCheckTypes[index]}}</view>
           </picker>
           <view class="list-thumb">
           <image class="thumb2" src="../../images/security.png"></image>
         </view>
-      </view>
+      </view> -->
       <!-- <view class="item" wx:for="{{securityCheckResult}}">
         <view class="express-label">{{item}}</view>
         <view class="list-thumb">
@@ -94,7 +98,7 @@
       </view> -->
 
 
- <view class="item" wx:key="">
+ <!-- <view class="item" wx:key="">
         <view class="title">5. 用户签收</view>  
           <input  class="express-pay"  disabled='true' wx:if='{{uploadCertificateFlag}}' value='用户单据已上传'></input>
         <view class="list-thumb">
@@ -107,7 +111,7 @@
         <view class="list-thumb">
           <image class="thumb2" src="../../images/qrcode.jpg" bindtap='uploadCertificate'></image>
         </view> 
-      </view>
+      </view> -->
 
       <!-- <view class="item">
         <view class="express-label">钢瓶号图片上传：</view>

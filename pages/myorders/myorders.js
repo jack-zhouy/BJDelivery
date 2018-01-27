@@ -18,7 +18,8 @@ Page({
       wx.stopPullDownRefresh() //停止下拉刷新
     }, 1500);
   },
-
+  
+//查询已抢订单 订单状态为1
   requestData: function (a) {
     var that = this;
     var app = getApp();
@@ -85,16 +86,7 @@ Page({
   onUnload:function(){
     
   },
-  // 订单处理
-  // dealOrder: function (e) {
-  //   var order = e.currentTarget.dataset.order;
-  //    wx.navigateTo({
-  //      url: '../deliver/deliver?order=' + JSON.stringify(order),
-  //     success: function (res) { },
-  //     fail: function (res) { },
-  //     complete: function (res) { },
-  //   })
-  // },
+
 //显示订单详情
   showDetail:function(e){  
     var order = e.currentTarget.dataset.order;
@@ -105,6 +97,41 @@ Page({
       fail: function(res) {},
       complete: function(res) {},
     })
+  },
 
-  }
+  //查询已签收订单 订单状态应为已配送orderStatus: 2
+  requestOrderHistory: function () {
+    var that = this;
+    var app = getApp();
+    console.log("后台查询已配送完成的任务单");
+    wx.request({
+      url: getApp().GlobalConfig.baseUrl + "/api/TaskOrders" + "/" + app.globalData.userId + "?",
+      data: {
+        orderStatus: 2,
+      },
+      method: 'GET',
+      success: function (res) {
+        // 数据从逻辑层发送到视图层，同时改变对应的 this.data 的值
+        console.log(res.data);
+        that.setData({
+          ordersList: res.data.items,
+          loading: true,
+        })
+        console.log("已配送完成的订单ordersList:");
+        console.log(that.data.ordersList);
+      },
+      fail: function () {
+        console.error("failed");
+      }
+    })
+
+    // 获取系统信息
+    wx.getSystemInfo({
+      success: (res) => {
+        that.setData({
+          windowHeight: res.windowHeight
+        })
+      }
+    })
+  },
 })

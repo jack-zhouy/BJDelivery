@@ -89,4 +89,21 @@ Page({
     //}
   },
 
+//跳转到查看我的气瓶
+  navigateToCheckMybottle: function () {
+    var app = getApp();
+    //如果没有登录就跳转到登录页面
+    if ((!app.globalData.loginState) && (app.globalData.userId == null)) {
+      wx.navigateTo({
+        url: '../index/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '../checkMybottle/checkMybottle',
+        success: function (res) { },
+        fail: function (res) { },
+        complete: function (res) { },
+      })
+    }
+  },
 }) 

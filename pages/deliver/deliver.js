@@ -47,14 +47,6 @@ Page({
     console.log("options.order");
     console.log(options.order);
 
-    //if (order.object.payType == "PTOnLine") {
-    if (order.object.payType.index == 0) {
-      that.data.payType = "微信支付"
-    }
-    else {
-      that.data.payType = "气到付款"
-    }
-
     if (order.object.payStatus == "PSUnpaid") {
       that.data.payState = "待支付"
     }
@@ -296,13 +288,14 @@ Page({
 
   },
 
+//调微信二维码
   getQRCode: function () { 
     var that = this;
     console.log(that.data.addedPayFee);
-    console.log(that.data.order);
+    console.log(that.data.order.object.orderSn);
     that.setData({
-      qrCodeUrl: "http://118.31.77.228:8006/api/test/Pay/Scan?orderIndex=" +
-      that.data.order.id + "&totalFree=" + that.data.addedPayFee*100,
+      qrCodeUrl: "https://www.yunnanbaijiang.com:8009/api/pay/scan?orderIndex=" +
+      that.data.order.object.orderSn + "&totalFee=" + that.data.addedPayFee*100,
     })
   },
 
@@ -317,9 +310,9 @@ Page({
 
   successDelivery:function(){
     var that = this;
-    that.upload_emptyBottleNumber();
-    that.upload_fullBottleNumber();
-    that.GetDepLeader_request();
+    that.upload_BottleNumber();
+    // that.upload_fullBottleNumber();
+    // that.GetDepLeader_request();
 
   },
 
@@ -355,6 +348,7 @@ Page({
     })
   },
 
+//调用接口是配送成功
   success_deliver:function(){
     var that = this;
     var app = getApp();
@@ -419,6 +413,7 @@ Page({
         emptyBottleNumber: e.detail.value
     })
     console.log(that.data.emptyBottleNumber);
+    console.log(that.data.emptyBottleNumber.length);
   },
 
   //重钢瓶号输入
@@ -440,81 +435,120 @@ Page({
         fullBottleNumber: e.detail.value
     })
    console.log(that.data.fullBottleNumber);
+   console.log(that.data.fullBottleNumber.length);
   },
 
-  //上传空钢瓶号
-  upload_emptyBottleNumber: function () {
+  //如果有输入空瓶号则上传空瓶号，成功后上传重瓶号，再次成功后走到配送成功
+  //如果没有输入空瓶号则上传重瓶号，成功之后走到配送成功
+  upload_BottleNumber: function () {
     var that = this;
     var app = getApp();
     
-    console.log("上传空钢瓶号码");
+    //console.log(that.data.emptyBottleNumber.length);
     // var flag = this.checkEmptyBottleNum();
-    // if(flag){
+    //有空瓶号输入则上传空瓶号，成功后上传重瓶号，再次成功后走到配送成功
+    if (that.data.emptyBottleNumber.length>0){
+      console.log("上传空钢瓶号码");
       wx.request({
         url: getApp().GlobalConfig.baseUrl + "/api/GasCylinder/TakeOver" + '/' + this.data.emptyBottleNumber + '?srcUserId=' + that.data.customerUserId + '&targetUserId=' + app.globalData.userId + '&serviceStatus=5',
         method: 'PUT',
         success: function (res) {
           if (res.statusCode == 200) {
-            console.log("空钢瓶号上传成功");
-            // //不管空瓶号是否上传成功均上传重钢瓶号
-            // that.upload_fullBottleNumber();
+            console.log("空瓶号上传成功");
+            // wx.showToast({
+            //   title: '空瓶号上传成功',
+            //   icon: 'fail',
+            //   duration: 2000,
+            // });
+            // 空瓶号上传成功后上传重钢瓶号
+            that.upload_fullBottleNumber();
           } 
           else if (res.statusCode == 404){
-            console.error("钢瓶或用户不存在"); 
-            //that.upload_fullBottleNumber();           
+            console.error("空瓶或用户不存在");      
+            wx.showModal({
+              title: '提示',
+              showCancel: false,
+              content: '空瓶或用户不存在'
+            });
           }
           else if (res.statusCode == 406){
-            console.error("责任人校验错误"); 
-            //that.upload_fullBottleNumber();           
+            console.error("空瓶责任人校验错误");         
           }
           else if (res.statusCode == 400) {
-            console.error("参数错误");
-            //that.upload_fullBottleNumber();
+            console.error("空瓶参数错误");
+            wx.showModal({
+              title: '提示',
+              showCancel: false,
+              content: '空瓶参数错误'
+            });
           }
         },
         fail: function () {
-          console.error("上传空钢瓶号失败");
-          // //不管空瓶号是否上传成功均上传重钢瓶号
-          // that.upload_fullBottleNumber();
+          console.error("上传空瓶号失败");
+
+          wx.showModal({
+            title: '提示',
+            showCancel: false,
+            content: '上传空瓶号失败'
+          });
         }
       })
-    //}
+    }
+  //没有空瓶号输入则上传重瓶号，成功之后走到配送成功
+    else{
+      that.upload_fullBottleNumber();
+    }
   },
 
   //上传重钢瓶号
   upload_fullBottleNumber: function () {
     var that = this;
     var app = getApp();
-    console.log("上传重钢瓶号码");
+    console.log("上传重瓶号");
     // var flag = this.checkFullBottleNum(param);
     if (that.data.fullBottleNumber.length > 0) {
       wx.request({
-        url: getApp().GlobalConfig.baseUrl + "/api/GasCylinder/TakeOver" + '/' + this.data.fullBottleNumber + '?srcUserId=' + app.globalData.userId + '&targetUserId=' + that.data.customerUserId + '&serviceStatus=2',
+        url: getApp().GlobalConfig.baseUrl + "/api/GasCylinder/TakeOver" + '/' + this.data.fullBottleNumber + '?srcUserId=' + app.globalData.userId + '&targetUserId=' + that.data.customerUserId + '&serviceStatus=4',
         method: 'PUT',
         success: function (res) {
           if (res.statusCode == 200) {
-            console.log("重钢瓶号上传成功");
-            // //如成功调接口查询配送工的下一个责任人
-            // that.GetDepLeader_request();
+            console.log("重瓶号上传成功");
+            //如成功调接口查询配送工的下一个责任人
+            that.GetDepLeader_request();
           }
           else if (res.statusCode == 404) {
-            console.error("钢瓶或用户不存在");
+            console.error("重瓶或用户不存在");
+            wx.showModal({
+              title: '提示',
+              showCancel: false,
+              content: '重瓶或用户不存在'
+            });
           }
           else if (res.statusCode == 406) {
-            console.error("参数错误/责任人校验错误");
+            console.error("重瓶参数错误/责任人校验错误");
+            wx.showModal({
+              title: '提示',
+              showCancel: false,
+              content: '重瓶参数错误/责任人校验错误'
+            });
           }
         },
         fail: function () {
-          console.error("上传重钢瓶号失败");
+          console.error("上传重瓶号失败");
+          wx.showModal({
+            title: '提示',
+            showCancel: false,
+            content: '上传重瓶号失败'
+          });
         }
       })
     }
     else
     {
-        wx.showToast({
-        title: '请输入正确的重瓶号',
-        icon: 'fail',
-        duration: 2000,
+      wx.showModal({
+        title: '提示',
+        showCancel: false,
+        content: '请输入正确的重瓶号'
       });
     }
   },
