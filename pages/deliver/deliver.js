@@ -16,7 +16,7 @@ Page({
     ],
     index: 0,
     payTypes: [
-      "扫码支付",
+      "微信支付",
       "现金支付"
     ],
     securityCheckResult: [],
@@ -36,8 +36,64 @@ Page({
     nextGroup:"",
     emptyBottleNumber:"",
     fullBottleNumber:"",
-    customerUserId:""
+    customerUserId:"",
 
+    orderNum:"",
+    checkpayState:""
+
+  },
+  //下拉刷新
+  onPullDownRefresh: function () {
+    wx.showNavigationBarLoading() //在标题栏中显示加载
+    this.checkOrderPayStatus_request();
+    //模拟加载
+    setTimeout(function () {
+      wx.hideNavigationBarLoading() //完成停止加载
+      wx.stopPullDownRefresh() //停止下拉刷新
+    }, 1500);
+  },
+//check订单支付状态
+  checkOrderPayStatus_request: function(){
+    var that = this; 
+    //查询所有订单
+    wx.request({
+      url: getApp().GlobalConfig.baseUrl + "/api/Orders",
+      data: {
+        orderSn: that.data.orderNum
+      },
+      method: 'GET',
+      success: function (res) {
+        // 数据从逻辑层发送到视图层，同时改变对应的 this.data 的值
+        //console.log(res.data);
+        var payState=res.data.items[0].payStatus.index;
+        if (payState == 0)
+        {
+          that.data.checkpayState ="待支付"
+        }
+        else if (payState == 1) {
+          that.data.checkpayState = "已支付"
+        }
+        else if (payState == 2) {
+          that.data.checkpayState = "退款中"
+        }
+        else if (payState == 3) {
+          that.data.checkpayState = "已退款"
+        }
+        that.setData({
+          checkpayState: that.data.checkpayState
+        })
+        wx.showModal({
+          title: '提示：',
+          content: '订单支付状态是' + that.data.checkpayState,
+          showCancel: false,
+          confirmColor: '#ff4d64'
+        })
+
+      },
+      fail: function () {
+        console.log("failed");
+      }
+    })
   },
   // 页面初始化
   onLoad: function (options) {
@@ -67,7 +123,7 @@ Page({
     that.data.addedPayFee = order.object.orderAmount;
 
     that.data.customerUserId = order.object.customer.userId;
-
+    that.data.orderNum = order.object.orderSn;
     that.setData({
       order: order,
       loading: true,
@@ -76,7 +132,8 @@ Page({
       addedPayFee: that.data.addedPayFee,
       payType: that.data.payType,
       payState: that.data.payState,
-      customerUserId: that.data.customerUserId
+      customerUserId: that.data.customerUserId,
+      orderNum: that.data.orderNum
     })
   },
   // 页面初次渲染完成（每次打开页面都会调用一次）
@@ -252,22 +309,6 @@ Page({
 
       }
     })
-
-
-    // wx.chooseImage({
-    //   count: 1, // 默认9
-    //   sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-    //   sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-    //   success: function (res) {
-    //     // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
-    //     var tempFilePaths = res.tempFilePaths;
-    //     that.setData({
-    //       tempFilePaths: tempFilePaths,
-    //       uploadCertificateFlag :true,
-    //     })
-        
-    //   }
-    // })
   },
   bindPayTypesChange: function (e) {
     var that = this;
@@ -285,7 +326,6 @@ Page({
         payType: payType,
       })
     }
-
   },
 
 //调微信二维码
@@ -382,10 +422,12 @@ Page({
                   url: '../orders/orders',
                 })
               }, 1500);
-
             }
           })
-
+          //调接口修改订单支付方式为微信支付
+          if (that.data.qrCode == true) {
+            that.checkOrderPayStatus_request();
+          }
         }
       },
       fail: function () {
@@ -450,7 +492,7 @@ Page({
     if (that.data.emptyBottleNumber.length>0){
       console.log("上传空钢瓶号码");
       wx.request({
-        url: getApp().GlobalConfig.baseUrl + "/api/GasCylinder/TakeOver" + '/' + this.data.emptyBottleNumber + '?srcUserId=' + that.data.customerUserId + '&targetUserId=' + app.globalData.userId + '&serviceStatus=5',
+        url: getApp().GlobalConfig.baseUrl + "/api/GasCylinder/TakeOver" + '/' + this.data.emptyBottleNumber + '?srcUserId=' + that.data.customerUserId + '&targetUserId=' + app.globalData.userId + '&serviceStatus=6',
         method: 'PUT',
         success: function (res) {
           if (res.statusCode == 200) {
@@ -468,7 +510,7 @@ Page({
             wx.showModal({
               title: '提示',
               showCancel: false,
-              content: '空瓶或用户不存在'
+              content: '空瓶不存在'
             });
           }
           else if (res.statusCode == 406){
@@ -479,7 +521,7 @@ Page({
             wx.showModal({
               title: '提示',
               showCancel: false,
-              content: '空瓶参数错误'
+              content: '空瓶不存在'
             });
           }
         },
@@ -508,7 +550,7 @@ Page({
     // var flag = this.checkFullBottleNum(param);
     if (that.data.fullBottleNumber.length > 0) {
       wx.request({
-        url: getApp().GlobalConfig.baseUrl + "/api/GasCylinder/TakeOver" + '/' + this.data.fullBottleNumber + '?srcUserId=' + app.globalData.userId + '&targetUserId=' + that.data.customerUserId + '&serviceStatus=4',
+        url: getApp().GlobalConfig.baseUrl + "/api/GasCylinder/TakeOver" + '/' + this.data.fullBottleNumber + '?srcUserId=' + app.globalData.userId + '&targetUserId=' + that.data.customerUserId + '&serviceStatus=5',
         method: 'PUT',
         success: function (res) {
           if (res.statusCode == 200) {
@@ -521,7 +563,7 @@ Page({
             wx.showModal({
               title: '提示',
               showCancel: false,
-              content: '重瓶或用户不存在'
+              content: '重瓶不存在'
             });
           }
           else if (res.statusCode == 406) {
@@ -529,7 +571,7 @@ Page({
             wx.showModal({
               title: '提示',
               showCancel: false,
-              content: '重瓶参数错误/责任人校验错误'
+              content: '重瓶不存在'
             });
           }
         },
@@ -552,4 +594,21 @@ Page({
       });
     }
   },
+
+  //选择扫码支付并修改订单支付方式
+  checkOrderPayStatus_request: function () {
+    var that = this;
+    console.log("修改订单微信支付");
+    wx.request({
+      url: getApp().GlobalConfig.baseUrl + "/api/Orders" + '/' + that.data.orderNum + '?payType=PTOnLine',
+      method: 'PUT',
+      success: function (res) {
+        console.log("修改订单微信支付成功");
+      },
+      fail: function () {
+        console.error("修改订单微信支付失败");
+      }
+    })
+  },
+
 })

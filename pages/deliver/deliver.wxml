@@ -78,8 +78,8 @@
         </view>
       </view>
         <view class="item" wx:if="{{qrCode}}">
-       <image class="thumb-qrcode" src="{{qrCodeUrl}}"></image>
-      </view>
+          <image class="thumb-qrcode" src="{{qrCodeUrl}}"></image>
+        </view>
 
       <!-- <view class="item" wx:key="">
         <view class="title">4. 安全检查</view>

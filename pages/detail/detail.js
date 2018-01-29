@@ -26,7 +26,6 @@ Page({
         showGrab:true,
       })
 
-      //if (order.object.payType == "PTOnLine") {
       if (order.object.payType.index == 0) {
         that.data.payMethod = "微信支付"
       }
@@ -68,7 +67,6 @@ Page({
       that.data.deliveryAddress = order.object.recvAddr.province + order.object.recvAddr.city
         + order.object.recvAddr.county;
       that.data.deliveryAddressDetail = order.object.recvAddr.detail;
-
       that.data.dealText = "立即抢单";
 
     }
@@ -77,7 +75,6 @@ Page({
         that.setData({
           showGrab: true,
         })
-
         if (order.object.payType.index == 0) {
           that.data.payMethod = "微信支付"
         }
@@ -117,9 +114,55 @@ Page({
         that.data.deliveryAddress = order.object.recvAddr.province + order.object.recvAddr.city
           + order.object.recvAddr.county;
         that.data.deliveryAddressDetail = order.object.recvAddr.detail;
-
         that.data.dealText = "下一步";
       }
+      
+    else if (model == 'history') {
+      that.setData({
+        showGrab: false,
+      })
+      if (order.object.payType.index == 0) {
+        that.data.payMethod = "微信支付"
+      }
+      else {
+        that.data.payMethod = "气到付款"
+      }
+
+      if (order.object.orderStatus == 0) {
+        that.data.orderState = "待配送"
+      }
+      else if (order.object.orderStatus == 1) {
+        that.data.orderState = "派送中"
+      }
+      else if (order.object.orderStatus == 2) {
+        that.data.orderState = "已签收"
+      }
+      else if (order.object.orderStatus == 3) {
+        that.data.orderState = "订单结束"
+      }
+      else {
+        that.data.orderState = "作废"
+      }
+
+      if (order.object.payStatus.index == 0) {
+        that.data.payStatus = "待支付"
+      }
+      if (order.object.payStatus.index == 1) {
+        that.data.payStatus = "已支付"
+      }
+      if (order.object.payStatus.index == 2) {
+        that.data.payStatus = "退款中"
+      }
+      else if (order.object.payStatus.index == 3) {
+        that.data.payStatus = "已退款"
+      }
+      that.data.deliveryAddress = order.object.recvAddr.province + order.object.recvAddr.city
+        + order.object.recvAddr.county;
+      that.data.deliveryAddressDetail = order.object.recvAddr.detail;
+      that.data.dealText = "下一步";
+    }
+
+
     that.setData({
       order: order,
       loading: true,

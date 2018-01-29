@@ -73,20 +73,20 @@ Page({
 
 //查看历史订单
   navigateToCheckOrderHistory: function () {
-    //var app = getApp();
+    var app = getApp();
     //如果没有登录就跳转到登录页面
-    // if ((!app.globalData.loginState) && (app.globalData.userId == null)) {
-    //   wx.navigateTo({
-    //     url: '../login/login',
-    //   })
-    // } else {
-      wx.reLaunch({
-        url: '../orders/orders?' + '&model=checkOrderHistory',
+    if ((!app.globalData.loginState) && (app.globalData.userId == null)) {
+      wx.navigateTo({
+        url: '../index/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '../history/history',
         success: function (res) { },
         fail: function (res) { },
         complete: function (res) { },
       })
-    //}
+    }
   },
 
 //跳转到查看我的气瓶

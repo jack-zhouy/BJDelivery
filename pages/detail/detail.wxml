@@ -51,7 +51,7 @@
 </view>
 
 <view class="input-log">
-  <view class="Title">预约送气时间:</view>
+  <view class="Title">送气时间:</view>
   <input disabled="{{true}}" class="IndexText" value="{{order.object.reserveTime}}"></input>
 </view>
 

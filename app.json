@@ -7,7 +7,8 @@
     "pages/deliver/deliver",
     "pages/member/member",
     "pages/myorders/myorders",
-    "pages/checkMybottle/checkMybottle"
+    "pages/checkMybottle/checkMybottle",
+    "pages/history/history"
   ],
   "window": {
     "backgroundTextStyle": "light",
