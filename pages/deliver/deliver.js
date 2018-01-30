@@ -11,7 +11,7 @@ Page({
       '灶具不合格，请予更换',
       '用气环境不合格，请予调整',
       '已对用户做用气安全培训',
-      '安全检查合格',
+      '安全检查合格', 
       '用户自行跟换相关配件',
     ],
     index: 0,
@@ -44,6 +44,7 @@ Page({
   },
   //下拉刷新
   onPullDownRefresh: function () {
+    console.log("下拉刷新");
     wx.showNavigationBarLoading() //在标题栏中显示加载
     this.checkOrderPayStatus_request();
     //模拟加载
@@ -325,6 +326,7 @@ Page({
         qrCode: false,
         payType: payType,
       })
+      console.log(that.data.payType);
     }
   },
 
@@ -426,7 +428,7 @@ Page({
           })
           //调接口修改订单支付方式为微信支付
           if (that.data.qrCode == true) {
-            that.checkOrderPayStatus_request();
+            that.changeOrderPayStatus_request();
           }
         }
       },
@@ -596,7 +598,7 @@ Page({
   },
 
   //选择扫码支付并修改订单支付方式
-  checkOrderPayStatus_request: function () {
+  changeOrderPayStatus_request: function () {
     var that = this;
     console.log("修改订单微信支付");
     wx.request({
