@@ -131,8 +131,7 @@ Page({
       },
       method: 'GET',
       success: function (res) {
-        // 数据从逻辑层发送到视图层，同时改变对应的 this.data 的值
-        //console.log(res.data);
+        // 数据从逻辑层发送到视图层，同时改变对应的 this.data 的值console.log(res.data);
         that.setData({
           ordersList: res.data.items,
           loading: true

@@ -11,6 +11,18 @@ Page({
     deliveryAddressDetail:"",
     //抢单或者完成配送text
     dealText:"",
+    orderSn:"",
+    recvNamePhone:"",
+    createTime:"",
+    goodsName:"",
+    quantity:"",
+    dealPrice:"",
+    orderAmount:"",
+    comment:"",
+    //一开始隐藏true
+    taskBoolean: true,
+    orderBoolean:true,
+
   },
   // 页面初始化
   onLoad: function (options) {
@@ -21,9 +33,11 @@ Page({
     console.log(order);
     console.log(model);
     //还没有抢的订单，需要显示抢单按钮
+
     if (model=='public'){
       that.setData({
         showGrab:true,
+        taskBoolean: false
       })
 
       if (order.object.payType.index == 0) {
@@ -74,6 +88,7 @@ Page({
      else if (model == 'private') {
         that.setData({
           showGrab: true,
+          taskBoolean: false
         })
         if (order.object.payType.index == 0) {
           that.data.payMethod = "微信支付"
@@ -120,48 +135,48 @@ Page({
     else if (model == 'history') {
       that.setData({
         showGrab: false,
+        orderBoolean: false
       })
-      if (order.object.payType.index == 0) {
+      if (order.payType.index == 0) {
         that.data.payMethod = "微信支付"
       }
       else {
         that.data.payMethod = "气到付款"
       }
 
-      if (order.object.orderStatus == 0) {
+      if (order.orderStatus == 0) {
         that.data.orderState = "待配送"
       }
-      else if (order.object.orderStatus == 1) {
+      else if (order.orderStatus == 1) {
         that.data.orderState = "派送中"
       }
-      else if (order.object.orderStatus == 2) {
+      else if (order.orderStatus == 2) {
         that.data.orderState = "已签收"
       }
-      else if (order.object.orderStatus == 3) {
+      else if (order.orderStatus == 3) {
         that.data.orderState = "订单结束"
       }
       else {
         that.data.orderState = "作废"
       }
 
-      if (order.object.payStatus.index == 0) {
+      if (order.payStatus.index == 0) {
         that.data.payStatus = "待支付"
       }
-      if (order.object.payStatus.index == 1) {
+      if (order.payStatus.index == 1) {
         that.data.payStatus = "已支付"
       }
-      if (order.object.payStatus.index == 2) {
+      if (order.payStatus.index == 2) {
         that.data.payStatus = "退款中"
       }
-      else if (order.object.payStatus.index == 3) {
+      else if (order.payStatus.index == 3) {
         that.data.payStatus = "已退款"
       }
-      that.data.deliveryAddress = order.object.recvAddr.province + order.object.recvAddr.city
-        + order.object.recvAddr.county;
-      that.data.deliveryAddressDetail = order.object.recvAddr.detail;
+      that.data.deliveryAddress = order.recvAddr.province + order.recvAddr.city
+        + order.recvAddr.county;
+      that.data.deliveryAddressDetail = order.recvAddr.detail;
       that.data.dealText = "下一步";
     }
-
 
     that.setData({
       order: order,
@@ -171,7 +186,10 @@ Page({
       payMethod: that.data.payMethod,
       payStatus:that.data.payStatus,
       orderState: that.data.orderState,
-      dealText: that.data.dealText
+      dealText: that.data.dealText,
+      goodsName: that.data.goodsName,
+      quantity:that.data.quantity,
+      dealPrice:that.data.dealPrice,
     })
     console.log(that.data.payMethod);
     console.log(that.data.orderState);

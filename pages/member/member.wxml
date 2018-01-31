@@ -7,7 +7,7 @@
     <view class="nickname" wx:if="{{!loginState}}" bindtap="gotoLogin">登录</view>
 </view>
 <!-- 账户 -->
-<view class="account">
+<!-- <view class="account">
 	<view class="item">
 		<view class="value balance">0</view>
 		<view class="caption">日完成</view>
@@ -20,7 +20,7 @@
 		<view class="value credit">0</view>
 		<view class="caption">积分</view>
 	</view>
-</view>
+</view> -->
 <!-- 列表 -->
 <view class="listview">
 	 <view class="item" bindtap='navigateToCheckMybottle'>

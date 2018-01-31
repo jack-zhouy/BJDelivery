@@ -53,6 +53,23 @@ Page({
       wx.stopPullDownRefresh() //停止下拉刷新
     }, 1500);
   },
+
+  //验证是否选择支付方式
+  checkChoosePayMethod: function () {
+    var that = this;
+    if (that.data.payType.length > 0) {
+      return true;
+    }
+    else {
+      wx.showModal({
+        title: '提示',
+        showCancel: false,
+        content: '请选择支付方式'
+      });
+      return false;
+    }
+  },
+
 //check订单支付状态
   checkOrderPayStatus_request: function(){
     var that = this; 
@@ -220,7 +237,9 @@ Page({
   showMap: function (e) {
     var address = e.currentTarget.dataset.address;
     var that = this;
-    that.getLocation(address);
+    // that.getLocation(address);
+    that.getLocation(address.province + address.city + address.county + address.detail);
+
   },
   //逆向地址解析
   getLocation: function (address) {
@@ -327,6 +346,7 @@ Page({
         payType: payType,
       })
       console.log(that.data.payType);
+      console.log(that.data.payType.length);
     }
   },
 
@@ -352,7 +372,13 @@ Page({
 
   successDelivery:function(){
     var that = this;
-    that.upload_BottleNumber();
+    var flag = this.checkChoosePayMethod();
+    console.log(flag);
+    if (flag)
+    {
+      that.upload_BottleNumber();
+    }
+   
     // that.upload_fullBottleNumber();
     // that.GetDepLeader_request();
 

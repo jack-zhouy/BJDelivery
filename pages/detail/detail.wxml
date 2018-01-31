@@ -5,13 +5,18 @@
 
 <view class="order-details">
   <view class="order-synopsis">
-    <view class="order-title"><text>订单号:{{order.object.orderSn}}</text></view>
-    <view><text class="order-rating">{{order.object.recvName}} | {{order.object.recvPhone}}</text></view>
-    <view class="order-brief">创建时间：{{order.object.createTime}}</view>
+    <view class="order-title" hidden="{{taskBoolean}}"><text>订单号:{{order.object.orderSn}}</text></view>
+    <view hidden="{{taskBoolean}}"><text class="order-rating">{{order.object.recvName}} | {{order.object.recvPhone}}</text></view>
+    <view hidden="{{taskBoolean}}" class="order-brief">创建时间：{{order.object.createTime}}</view>
+
+    <view class="order-title" hidden="{{orderBoolean}}"><text>订单号:{{order.orderSn}}</text></view>
+    <view hidden="{{orderBoolean}}"><text class="order-rating">{{order.recvName}} | {{order.recvPhone}}</text></view>
+    <view hidden="{{orderBoolean}}" class="order-brief">创建时间：{{order.createTime}}</view>
 
     <view class="order-brief">
       <text class="wish" >地址:{{deliveryAddress}}\r\n{{deliveryAddressDetail}}</text>
-      <image class="thumb"  bindtap='showMap' data-address="{{order.object.recvAddr}}"  src="../../images/maps.png"></image>
+      <image hidden="{{taskBoolean}}" class="thumb"  bindtap='showMap' data-address="{{order.object.recvAddr}}"  src="../../images/maps.png"></image>
+      <image hidden="{{orderBoolean}}" class="thumb"  bindtap='showMap' data-address="{{order.recvAddr}}"  src="../../images/maps.png"></image>
     </view>
   </view>
 </view>
@@ -21,7 +26,13 @@
   <view class="title">商品详情</view>
 		<!-- 清单 -->
 		<view class="list">
-			<view class="item" wx:for="{{order.object.orderDetailList}}" wx:key="">
+			<view class="item" wx:for="{{order.object.orderDetailList}}" wx:key="" hidden="{{taskBoolean}}">
+				<view class="title">{{item.goods.name}}</view>
+				<view class="quantity">{{item.quantity}}</view>
+				<view class="price">{{item.dealPrice}}</view>
+			</view>
+
+      <view class="item" wx:for="{{order.orderDetailList}}" wx:key="" hidden="{{orderBoolean}}">
 				<view class="title">{{item.goods.name}}</view>
 				<view class="quantity">{{item.quantity}}</view>
 				<view class="price">{{item.dealPrice}}</view>
@@ -30,7 +41,8 @@
 		<!-- 配送费 -->
 		<view class="item">
 			<view class="title">总价</view>
-			<view class="price">{{order.object.orderAmount}}</view>
+			<view class="price" hidden="{{taskBoolean}}">{{order.object.orderAmount}}</view>
+      <view class="price" hidden="{{orderBoolean}}">{{order.orderAmount}}</view>
 		</view>
 	</view>
 </view>
@@ -52,14 +64,16 @@
 
 <view class="input-log">
   <view class="Title">送气时间:</view>
-  <input disabled="{{true}}" class="IndexText" value="{{order.object.reserveTime}}"></input>
+  <input hidden="{{taskBoolean}}" disabled="{{true}}" class="IndexText" value="{{order.object.reserveTime}}"></input>
+  <input hidden="{{orderBoolean}}" disabled="{{true}}" class="IndexText" value="{{order.reserveTime}}"></input>
 </view>
 
 
 <!-- 备注 -->
 <view class="input-log">
   <view class="Title">订单备注:</view>
-  <input disabled="{{true}}" class="IndexText" value="{{order.object.comment}}"></input>
+  <input hidden="{{taskBoolean}}" disabled="{{true}}" class="IndexText" value="{{order.object.comment}}"></input>
+  <input hidden="{{orderBoolean}}" disabled="{{true}}" class="IndexText" value="{{order.comment}}"></input>
 </view>
 
 
